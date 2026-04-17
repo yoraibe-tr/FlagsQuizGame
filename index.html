@@ -13,7 +13,7 @@
   <title>משחק זכרון דגלים</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;700;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;700;900&family=Nunito:wght@400;600;700;900&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -29,17 +29,55 @@
       --radius: 18px;
     }
 
+    html[lang="he"] body { font-family: 'Heebo', sans-serif; }
+    html[lang="en"] body { font-family: 'Nunito', sans-serif; }
     body {
-      font-family: 'Heebo', sans-serif;
+      font-family: 'Heebo', 'Nunito', sans-serif;
       background: var(--bg);
       min-height: 100vh;
       color: #1a1a2e;
-      direction: rtl;
     }
 
     /* ── Screens ── */
     .screen { display: none; min-height: 100vh; }
     .screen.active { display: flex; flex-direction: column; }
+
+    /* ════════════════════════════════
+       LANGUAGE SCREEN
+    ════════════════════════════════ */
+    #screen-lang {
+      background: linear-gradient(160deg, #1a237e 0%, #283593 55%, #1565c0 100%);
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: var(--white);
+    }
+    .lang-box {
+      display: flex; flex-direction: column; align-items: center; gap: 28px;
+      padding: 40px 24px;
+    }
+    .lang-globe { font-size: 80px; }
+    .lang-title {
+      font-size: 1.6rem; font-weight: 700;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+    .lang-buttons { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; }
+    .btn-lang {
+      min-width: 170px; min-height: 84px;
+      font-size: 1.5rem; font-weight: 700;
+      border: none; border-radius: 20px; cursor: pointer;
+      color: var(--white);
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .btn-lang:first-child {
+      background: linear-gradient(135deg, #1565c0, #1e88e5);
+      box-shadow: 0 6px 20px rgba(21,101,192,0.5);
+    }
+    .btn-lang:last-child {
+      background: linear-gradient(135deg, #2e7d32, #43a047);
+      box-shadow: 0 6px 20px rgba(46,125,50,0.5);
+    }
+    .btn-lang:active { transform: scale(0.95); }
 
     /* ════════════════════════════════
        WELCOME SCREEN
@@ -48,656 +86,425 @@
       background: linear-gradient(160deg, #1a237e 0%, #283593 55%, #1565c0 100%);
       align-items: center;
       justify-content: center;
-      padding: 40px 20px;
       text-align: center;
-    }
-
-    .welcome-box {
-      background: rgba(255,255,255,0.08);
-      border: 2px solid rgba(255,255,255,0.2);
-      border-radius: 28px;
-      padding: 52px 48px;
-      max-width: 520px;
-      width: 100%;
-    }
-
-    .welcome-globe { font-size: 90px; line-height: 1; margin-bottom: 16px; }
-
-    .welcome-title {
-      font-size: 2.6rem;
-      font-weight: 900;
       color: var(--white);
-      margin-bottom: 10px;
-      text-shadow: 0 2px 12px rgba(0,0,0,0.3);
+      padding: 32px 20px;
+      gap: 20px;
     }
-
+    .welcome-emoji { font-size: 80px; line-height: 1; }
+    .welcome-title {
+      font-size: 2rem; font-weight: 900;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
     .welcome-sub {
-      font-size: 1.15rem;
-      color: rgba(255,255,255,0.82);
-      margin-bottom: 40px;
-      line-height: 1.6;
+      font-size: 1.15rem; opacity: 0.9; max-width: 340px;
     }
-
     .btn-start {
-      background: var(--gold);
-      color: #1a1a1a;
-      font-family: 'Heebo', sans-serif;
-      font-size: 1.6rem;
-      font-weight: 900;
-      padding: 18px 60px;
-      border: none;
-      border-radius: 50px;
-      cursor: pointer;
-      box-shadow: 0 8px 30px rgba(249,168,37,0.5);
-      transition: transform 0.15s, box-shadow 0.15s;
+      margin-top: 12px;
+      padding: 18px 48px; font-size: 1.4rem; font-weight: 800;
+      border: none; border-radius: 60px; cursor: pointer;
+      background: linear-gradient(135deg, var(--gold), #fbc02d);
+      color: var(--blue);
+      box-shadow: 0 6px 24px rgba(249,168,37,0.5);
+      transition: transform 0.15s;
     }
-    .btn-start:hover { transform: scale(1.05); box-shadow: 0 12px 40px rgba(249,168,37,0.6); }
-    .btn-start:active { transform: scale(0.97); }
+    .btn-start:active { transform: scale(0.95); }
+    .btn-change-lang {
+      margin-top: 16px; padding: 10px 20px;
+      font-size: 0.95rem; font-weight: 600;
+      background: rgba(255,255,255,0.15); color: var(--white);
+      border: 1px solid rgba(255,255,255,0.3); border-radius: 30px;
+      cursor: pointer; transition: background 0.2s;
+    }
+    .btn-change-lang:hover { background: rgba(255,255,255,0.25); }
+
+    /* ════════════════════════════════
+       WARNING BANNER
+    ════════════════════════════════ */
+    .voice-warning {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 999;
+      background: #ff6f00; color: var(--white); text-align: center;
+      padding: 10px 16px; font-size: 0.9rem; font-weight: 600;
+      display: none;
+    }
+    .voice-warning.show { display: block; }
 
     /* ════════════════════════════════
        STUDY SCREEN
     ════════════════════════════════ */
     #screen-study {
-      background: var(--bg);
-      padding: 0;
+      background: var(--bg); padding-bottom: 32px;
     }
-
     .study-header {
-      background: var(--blue);
-      color: var(--white);
-      padding: 18px 32px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
+      background: linear-gradient(135deg, var(--blue), var(--sky));
+      color: var(--white); padding: 18px 20px;
+      display: flex; align-items: center; justify-content: space-between;
     }
-
-    .study-header-title { font-size: 1.3rem; font-weight: 700; }
-
+    .study-header h2 { font-size: 1.25rem; font-weight: 700; }
     .round-badge {
-      background: var(--gold);
-      color: #1a1a1a;
-      font-weight: 900;
-      font-size: 1rem;
-      padding: 6px 18px;
-      border-radius: 50px;
+      background: rgba(255,255,255,0.2); padding: 4px 14px;
+      border-radius: 20px; font-size: 0.9rem; font-weight: 600;
     }
-
-    .study-instruction {
-      text-align: center;
-      font-size: 1.35rem;
-      font-weight: 600;
-      color: var(--blue);
-      padding: 24px 20px 12px;
-    }
-
     .study-grid {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 20px;
-      padding: 16px 24px 32px;
+      display: flex; flex-wrap: wrap; justify-content: center;
+      gap: 16px; padding: 20px 12px;
     }
-
-    /* Flag study card */
     .study-card {
-      background: var(--white);
-      border-radius: var(--radius);
-      box-shadow: 0 4px 20px rgba(0,0,0,0.12);
-      width: 200px;
-      overflow: hidden;
-      transition: transform 0.2s;
+      width: 200px; background: var(--white);
+      border-radius: var(--radius); overflow: hidden;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
     }
-    .study-card:hover { transform: translateY(-4px); }
-
-    .study-card-region-bar {
-      height: 8px;
-      width: 100%;
-    }
-
     .study-card-flag {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 16px 12px 10px;
-      background: #f8f9fa;
-      border-bottom: 1px solid #eee;
+      width: 100%; height: 120px; object-fit: cover;
+      border-bottom: 3px solid var(--gold);
     }
-
-    .study-card-flag img {
-      width: 160px;
-      height: 105px;
-      object-fit: cover;
-      border-radius: 6px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-    }
-
-    .study-card-body {
-      padding: 14px 14px 16px;
-    }
-
+    .study-card-body { padding: 10px 12px; }
     .study-card-name {
-      font-size: 1.45rem;
-      font-weight: 900;
-      color: var(--blue);
-      text-align: center;
-      margin-bottom: 10px;
+      display: flex; align-items: center; gap: 8px;
+      font-size: 1.05rem; font-weight: 700; margin-bottom: 8px;
     }
-
-    .study-card-speak {
-      display: flex;
-      justify-content: center;
-      margin-bottom: 12px;
+    .btn-hear-name {
+      flex-shrink: 0; width: 36px; height: 36px;
+      border: none; border-radius: 50%; cursor: pointer;
+      background: var(--sky); color: var(--white);
+      font-size: 1rem; display: flex; align-items: center; justify-content: center;
     }
-
-    .btn-speak {
-      background: var(--sky);
-      color: white;
-      border: none;
-      border-radius: 50px;
-      padding: 7px 18px;
-      font-family: 'Heebo', sans-serif;
-      font-size: 0.95rem;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      transition: background 0.15s;
+    .fact-row {
+      display: flex; align-items: center; gap: 6px;
+      padding: 4px 0; font-size: 0.82rem;
+      border-top: 1px solid #eee;
     }
-    .btn-speak:hover { background: var(--blue); }
-
-    .study-info-row {
-      font-size: 0.88rem;
-      color: #444;
-      padding: 3px 0;
-      display: flex;
-      justify-content: space-between;
-      border-bottom: 1px solid #f0f0f0;
-      gap: 8px;
+    .fact-label { font-weight: 600; white-space: nowrap; }
+    .fact-value { flex: 1; }
+    .btn-hear-fact {
+      flex-shrink: 0; width: 30px; height: 30px;
+      border: none; border-radius: 50%; cursor: pointer;
+      background: var(--sky); color: var(--white);
+      font-size: 0.8rem; display: flex; align-items: center; justify-content: center;
     }
-    .study-info-row:last-child { border-bottom: none; }
-    .study-info-label { font-weight: 600; color: #555; white-space: nowrap; }
-    .study-info-val { color: #333; direction: ltr; text-align: left; }
-
-    .study-footer {
-      display: flex;
-      justify-content: center;
-      padding: 8px 24px 36px;
-    }
+    .btn-hear-fact:active, .btn-hear-name:active { transform: scale(0.9); }
 
     .btn-quiz {
-      background: var(--green);
-      color: white;
-      font-family: 'Heebo', sans-serif;
-      font-size: 1.5rem;
-      font-weight: 900;
-      padding: 18px 56px;
-      border: none;
-      border-radius: 50px;
-      cursor: pointer;
-      box-shadow: 0 6px 24px rgba(46,125,50,0.4);
-      transition: transform 0.15s, box-shadow 0.15s;
+      display: block; margin: 20px auto 0;
+      padding: 16px 44px; font-size: 1.25rem; font-weight: 800;
+      border: none; border-radius: 50px; cursor: pointer;
+      background: linear-gradient(135deg, var(--green), #43a047);
+      color: var(--white);
+      box-shadow: 0 6px 20px rgba(46,125,50,0.4);
+      transition: transform 0.15s;
     }
-    .btn-quiz:hover { transform: scale(1.04); }
-    .btn-quiz:active { transform: scale(0.97); }
+    .btn-quiz:active { transform: scale(0.95); }
 
     /* ════════════════════════════════
        QUIZ SCREEN
     ════════════════════════════════ */
-    #screen-quiz {
-      background: var(--bg);
-    }
-
+    #screen-quiz { background: var(--bg); }
     .quiz-header {
-      background: var(--blue);
-      color: var(--white);
-      padding: 18px 32px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
+      background: linear-gradient(135deg, var(--blue), var(--sky));
+      color: var(--white); padding: 14px 20px;
     }
-
-    .quiz-header-title { font-size: 1.3rem; font-weight: 700; }
-
-    .progress-bar-wrap {
-      flex: 1;
-      background: rgba(255,255,255,0.2);
-      border-radius: 20px;
-      height: 12px;
-      max-width: 220px;
-      overflow: hidden;
+    .progress-bar-bg {
+      height: 10px; background: rgba(255,255,255,0.25);
+      border-radius: 5px; margin-top: 8px; overflow: hidden;
     }
     .progress-bar-fill {
-      height: 100%;
-      background: var(--gold);
-      border-radius: 20px;
-      transition: width 0.4s;
+      height: 100%; background: var(--gold);
+      border-radius: 5px; transition: width 0.4s;
     }
-
-    .quiz-progress-text { font-size: 1rem; font-weight: 700; }
-
     .quiz-body {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 32px 20px;
-      gap: 28px;
+      flex: 1; display: flex; flex-direction: column;
+      align-items: center; padding: 20px 16px 32px; gap: 18px;
     }
-
-    .quiz-question-label {
-      font-size: 1.6rem;
-      font-weight: 700;
-      color: var(--blue);
-      text-align: center;
+    .quiz-question-row {
+      display: flex; align-items: center; gap: 12px;
     }
-
-    .quiz-flag-wrap {
-      background: var(--white);
-      border-radius: 20px;
-      padding: 20px 32px;
-      box-shadow: 0 6px 28px rgba(0,0,0,0.14);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 14px;
-    }
-
-    .quiz-flag-img {
-      width: 260px;
-      height: 172px;
-      object-fit: cover;
-      border-radius: 10px;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.18);
-    }
-
     .btn-hear-question {
-      background: var(--sky);
-      color: white;
-      border: none;
-      border-radius: 50px;
-      padding: 10px 26px;
-      font-family: 'Heebo', sans-serif;
-      font-size: 1.05rem;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      transition: background 0.15s;
+      flex-shrink: 0; min-width: 52px; height: 52px;
+      border: none; border-radius: 26px; cursor: pointer;
+      background: var(--sky); color: var(--white);
+      font-size: 1.3rem; padding: 0 14px;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 3px 10px rgba(21,101,192,0.3);
     }
-    .btn-hear-question:hover { background: var(--blue); }
-
-    /* Multiple choice answers */
-    .quiz-options {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-      width: 100%;
-      max-width: 560px;
+    .btn-hear-question:active { transform: scale(0.92); }
+    .quiz-question-text {
+      font-size: 1.2rem; font-weight: 700; color: var(--blue);
     }
-
-    .btn-option {
-      background: var(--white);
-      border: 3px solid #c5cae9;
+    .quiz-flag {
+      width: 220px; height: 150px; object-fit: cover;
       border-radius: 14px;
-      padding: 18px 14px;
-      font-family: 'Heebo', sans-serif;
-      font-size: 1.25rem;
-      font-weight: 700;
-      color: var(--blue);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      transition: border-color 0.15s, background 0.15s, transform 0.12s;
-      text-align: center;
+      box-shadow: 0 6px 24px rgba(0,0,0,0.15);
+      border: 4px solid var(--white);
     }
-    .btn-option:hover { border-color: var(--sky); background: #e8eaf6; transform: scale(1.02); }
-    .btn-option.correct  { background: #e8f5e9; border-color: var(--green); color: var(--green); }
-    .btn-option.wrong    { background: #ffebee; border-color: var(--red); color: var(--red); }
-    .btn-option:disabled { cursor: default; transform: none; }
-
-    /* Detail phase */
-    .detail-box {
-      background: var(--white);
-      border-radius: 16px;
-      padding: 24px 28px;
-      max-width: 560px;
-      width: 100%;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-      text-align: center;
+    .quiz-country-label {
+      font-size: 1.1rem; font-weight: 700; color: var(--blue);
     }
-
-    .detail-label {
-      font-size: 1.1rem;
-      font-weight: 600;
-      color: #555;
-      margin-bottom: 14px;
+    .options-list {
+      width: 100%; max-width: 420px;
+      display: flex; flex-direction: column; gap: 10px;
     }
-
-    .detail-options {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
+    .option-row {
+      display: flex; gap: 10px; align-items: stretch;
     }
-
-    .btn-detail {
-      background: var(--white);
-      border: 3px solid #c5cae9;
-      border-radius: 12px;
-      padding: 14px 20px;
-      font-family: 'Heebo', sans-serif;
-      font-size: 1.1rem;
-      font-weight: 600;
-      color: var(--blue);
-      cursor: pointer;
-      transition: border-color 0.15s, background 0.15s;
-      text-align: right;
+    .btn-hear-opt {
+      flex-shrink: 0; width: 48px; min-height: 48px;
+      border: none; border-radius: 12px; cursor: pointer;
+      background: var(--sky); color: var(--white);
+      font-size: 1.15rem;
+      display: flex; align-items: center; justify-content: center;
     }
-    .btn-detail:hover { border-color: var(--sky); background: #e8eaf6; }
-    .btn-detail.correct { background: #e8f5e9; border-color: var(--green); color: var(--green); }
-    .btn-detail.wrong   { background: #ffebee; border-color: var(--red); color: var(--red); }
-    .btn-detail:disabled { cursor: default; }
+    .btn-hear-opt:active { transform: scale(0.9); }
+    .btn-option {
+      flex: 1; min-height: 48px; padding: 10px 16px;
+      font-size: 1.05rem; font-weight: 600;
+      border: 3px solid #c5cae9; border-radius: 14px;
+      background: var(--white); color: var(--blue);
+      cursor: pointer; transition: all 0.2s;
+      text-align: start;
+    }
+    .btn-option:active { transform: scale(0.97); }
+    .btn-option.correct {
+      border-color: var(--green); background: #e8f5e9; color: var(--green);
+    }
+    .btn-option.wrong {
+      border-color: var(--red); background: #ffebee; color: var(--red);
+    }
+    .btn-option:disabled { cursor: default; opacity: 0.85; }
 
     .btn-next {
-      background: var(--sky);
-      color: white;
-      font-family: 'Heebo', sans-serif;
-      font-size: 1.3rem;
-      font-weight: 900;
-      padding: 16px 48px;
-      border: none;
-      border-radius: 50px;
-      cursor: pointer;
-      box-shadow: 0 4px 20px rgba(21,101,192,0.4);
+      margin-top: 10px;
+      padding: 14px 40px; font-size: 1.15rem; font-weight: 700;
+      border: none; border-radius: 50px; cursor: pointer;
+      background: linear-gradient(135deg, var(--sky), #1e88e5);
+      color: var(--white);
+      box-shadow: 0 4px 16px rgba(21,101,192,0.35);
       transition: transform 0.15s;
-      margin-top: 8px;
+      display: none;
     }
-    .btn-next:hover { transform: scale(1.04); }
+    .btn-next:active { transform: scale(0.95); }
 
     /* ════════════════════════════════
-       ROUND RESULT SCREEN
+       RESULT SCREEN
     ════════════════════════════════ */
     #screen-result {
       background: linear-gradient(160deg, #1a237e 0%, #283593 55%, #1565c0 100%);
-      align-items: center;
-      justify-content: center;
-      padding: 40px 20px;
-      text-align: center;
+      align-items: center; justify-content: center;
+      text-align: center; color: var(--white);
+      padding: 32px 20px; gap: 18px;
     }
-
-    .result-box {
-      background: rgba(255,255,255,0.1);
-      border: 2px solid rgba(255,255,255,0.25);
-      border-radius: 28px;
-      padding: 52px 40px;
-      max-width: 480px;
-      width: 100%;
+    .result-emoji { font-size: 64px; }
+    .result-title { font-size: 1.8rem; font-weight: 900; }
+    .result-score { font-size: 1.15rem; opacity: 0.9; }
+    .result-chips {
+      display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;
+      margin: 8px 0;
     }
-
-    .result-emoji { font-size: 80px; line-height: 1; margin-bottom: 12px; }
-
-    .result-title {
-      font-size: 2.2rem;
-      font-weight: 900;
-      color: var(--white);
-      margin-bottom: 10px;
-    }
-
-    .result-score {
-      font-size: 1.25rem;
-      color: rgba(255,255,255,0.85);
-      margin-bottom: 36px;
-    }
-
-    .result-score strong {
-      color: var(--gold);
-      font-size: 1.6rem;
-    }
-
-    .result-flags {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-bottom: 36px;
-    }
-
-    .result-flag-chip {
-      background: rgba(255,255,255,0.15);
-      border-radius: 50px;
-      padding: 6px 14px;
-      color: white;
-      font-size: 1rem;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .result-flag-chip img {
-      width: 36px;
-      height: 24px;
+    .result-chip {
+      width: 64px; height: 44px; border-radius: 10px;
+      overflow: hidden; border: 3px solid;
       object-fit: cover;
-      border-radius: 3px;
     }
-
-    .result-flag-chip.won  { border: 2px solid #69f0ae; }
-    .result-flag-chip.lost { border: 2px solid #ff5252; opacity: 0.7; }
-
+    .result-chip.ok { border-color: #66bb6a; }
+    .result-chip.fail { border-color: #ef5350; opacity: 0.7; }
+    .btn-hear-results {
+      min-width: 200px; padding: 14px 28px;
+      font-size: 1.2rem; font-weight: 700;
+      border: none; border-radius: 50px; cursor: pointer;
+      background: linear-gradient(135deg, var(--gold), #fbc02d);
+      color: var(--blue);
+      box-shadow: 0 4px 16px rgba(249,168,37,0.5);
+    }
+    .btn-hear-results:active { transform: scale(0.95); }
     .btn-continue {
-      background: var(--gold);
-      color: #1a1a1a;
-      font-family: 'Heebo', sans-serif;
-      font-size: 1.5rem;
-      font-weight: 900;
-      padding: 18px 56px;
-      border: none;
-      border-radius: 50px;
-      cursor: pointer;
-      box-shadow: 0 6px 24px rgba(249,168,37,0.5);
+      padding: 16px 44px; font-size: 1.2rem; font-weight: 800;
+      border: none; border-radius: 50px; cursor: pointer;
+      background: var(--white); color: var(--blue);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.2);
       transition: transform 0.15s;
     }
-    .btn-continue:hover { transform: scale(1.05); }
-
-    /* ════════════════════════════════
-       SPEAKING ANIMATION
-    ════════════════════════════════ */
-    .speaking-dots {
-      display: inline-flex;
-      gap: 4px;
-      align-items: center;
-    }
-    .speaking-dots span {
-      width: 7px; height: 7px;
-      background: currentColor;
-      border-radius: 50%;
-      animation: bounce-dot 1s infinite;
-    }
-    .speaking-dots span:nth-child(2) { animation-delay: 0.15s; }
-    .speaking-dots span:nth-child(3) { animation-delay: 0.3s; }
-    @keyframes bounce-dot {
-      0%,80%,100% { transform: translateY(0); opacity: 0.5; }
-      40%          { transform: translateY(-6px); opacity: 1; }
-    }
-
-    /* ════════════════════════════════
-       TTS STATUS BAR + SOUND ICONS
-    ════════════════════════════════ */
-    #tts-status {
-      position: fixed; bottom: 0; left: 0; right: 0;
-      background: rgba(21,101,192,0.93);
-      color: white;
-      font-size: 0.95rem;
-      font-weight: 600;
-      padding: 10px 20px;
-      text-align: center;
-      display: none;
-      z-index: 200;
-      backdrop-filter: blur(6px);
-      border-top: 2px solid rgba(255,255,255,0.2);
-    }
-    #tts-status.visible { display: block; }
-
-    .sound-icon { font-size: 1em; flex-shrink: 0; }
-
-    /* Pulse on the 🔊 icon while TTS fires */
-    @keyframes speaker-pulse {
-      0%,100% { transform: scale(1);   opacity: 1;   }
-      50%      { transform: scale(1.4); opacity: 0.6; }
-    }
-    .tts-active .sound-icon { animation: speaker-pulse 0.5s infinite; }
-
-    /* Minimum touch target for child-friendly tapping */
-    .btn-option, .btn-detail { min-height: 56px; }
-
-    /* ════════════════════════════════
-       REGION COLORS
-    ════════════════════════════════ */
-    .region-europe   { background: #1565c0; }
-    .region-americas { background: #2e7d32; }
-    .region-asia     { background: #b71c1c; }
-    .region-africa   { background: #e65100; }
-
-    /* ════════════════════════════════
-       RESPONSIVE
-    ════════════════════════════════ */
-    @media (max-width: 700px) {
-      .study-card { width: 160px; }
-      .study-card-flag img { width: 130px; height: 86px; }
-      .study-card-name { font-size: 1.2rem; }
-      .quiz-flag-img { width: 200px; height: 133px; }
-      .quiz-options { grid-template-columns: 1fr; }
-      .btn-option { font-size: 1.1rem; padding: 16px 12px; }
-      .welcome-title { font-size: 2rem; }
-    }
-
-    @media (max-width: 480px) {
-      .study-grid { gap: 12px; padding: 12px 12px 24px; }
-      .study-card { width: 140px; }
-      .study-card-flag img { width: 116px; height: 76px; }
-    }
+    .btn-continue:active { transform: scale(0.95); }
   </style>
 </head>
 <body>
 
-<!-- ══════════════════════════════════
-     SCREEN 1 — WELCOME
-══════════════════════════════════ -->
-<div id="screen-welcome" class="screen active">
-  <!-- warning shown only when no Hebrew TTS voice found -->
-  <div id="no-hebrew-banner" style="display:none;background:#fff3e0;color:#e65100;padding:12px 20px;font-size:0.95rem;font-weight:600;text-align:center;border-bottom:2px solid #ffb74d;">
-    ⚠️ לא נמצא קול עברי במכשיר זה. לחוויה מלאה: הגדרות Windows ← נגישות ← קריינות ← הוסף שפה עברית.
-  </div>
-  <div class="welcome-box">
-    <div class="welcome-globe">🌍</div>
-    <h1 class="welcome-title">משחק זכרון דגלים</h1>
-    <p class="welcome-sub">
-      נלמד דגלים של מדינות מהעולם<br>
-      ואז נראה כמה זכרנו!
-    </p>
-    <button class="btn-start" onclick="speak('שלום! בואו נשחק!'); startGame();">בואו נשחק! 🎉</button>
-  </div>
-</div>
+  <!-- Voice warning banner -->
+  <div id="voice-warning" class="voice-warning"></div>
 
-<!-- ══════════════════════════════════
-     SCREEN 2 — STUDY (5 flags)
-══════════════════════════════════ -->
-<div id="screen-study" class="screen">
-  <header class="study-header">
-    <span class="study-header-title">📖 לומדים דגלים</span>
-    <span id="study-round-badge" class="round-badge"></span>
-  </header>
-  <div class="study-instruction" id="study-instruction">
-    הקשיבו לשמות המדינות &#x2192; אחר כך ננסה לזכור!
-  </div>
-  <div class="study-grid" id="study-grid"></div>
-  <div class="study-footer">
-    <button class="btn-quiz" id="btn-to-quiz" onclick="startQuiz()">
-      יאללה, בואו נשחק! 🧠
-    </button>
-  </div>
-</div>
-
-<!-- ══════════════════════════════════
-     SCREEN 3 — QUIZ
-══════════════════════════════════ -->
-<div id="screen-quiz" class="screen">
-  <header class="quiz-header">
-    <span class="quiz-header-title">🧠 זמן חידון!</span>
-    <div class="progress-bar-wrap">
-      <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
+  <!-- Screen 0: Language Picker -->
+  <div id="screen-lang" class="screen active">
+    <div class="lang-box">
+      <div class="lang-globe">🌍</div>
+      <h1 class="lang-title">Choose Language / בחר שפה</h1>
+      <div class="lang-buttons">
+        <button class="btn-lang" onclick="chooseLang('he')">🇮🇱 עברית</button>
+        <button class="btn-lang" onclick="chooseLang('en')">🇬🇧 English</button>
+      </div>
     </div>
-    <span class="quiz-progress-text" id="quiz-progress-text">1 / 5</span>
-  </header>
-  <div class="quiz-body" id="quiz-body">
-    <!-- injected by JS -->
   </div>
-</div>
 
-<!-- ══════════════════════════════════
-     SCREEN 4 — ROUND RESULT
-══════════════════════════════════ -->
-<div id="screen-result" class="screen">
-  <div class="result-box">
-    <div class="result-emoji" id="result-emoji">🎉</div>
-    <h2 class="result-title" id="result-title">כל הכבוד!</h2>
-    <p class="result-score" id="result-score"></p>
-    <div class="result-flags" id="result-flags"></div>
-    <button class="btn-continue" id="btn-continue" onclick="nextRound()"></button>
+  <!-- Screen 1: Welcome -->
+  <div id="screen-welcome" class="screen">
+    <div class="welcome-emoji">🌍</div>
+    <h1 id="welcome-title" class="welcome-title"></h1>
+    <p id="welcome-sub" class="welcome-sub"></p>
+    <button id="btn-start" class="btn-start" onclick="startGame()"></button>
+    <button class="btn-change-lang" onclick="showScreen('screen-lang')"></button>
   </div>
-</div>
+
+  <!-- Screen 2: Study -->
+  <div id="screen-study" class="screen">
+    <div class="study-header">
+      <h2 id="study-title"></h2>
+      <span id="study-round" class="round-badge"></span>
+    </div>
+    <div id="study-grid" class="study-grid"></div>
+    <button id="btn-start-quiz" class="btn-quiz" onclick="startQuiz()"></button>
+  </div>
+
+  <!-- Screen 3: Quiz -->
+  <div id="screen-quiz" class="screen">
+    <div class="quiz-header">
+      <span id="quiz-progress-label"></span>
+      <div class="progress-bar-bg">
+        <div id="quiz-progress-fill" class="progress-bar-fill" style="width:0%"></div>
+      </div>
+    </div>
+    <div id="quiz-body" class="quiz-body"></div>
+  </div>
+
+  <!-- Screen 4: Results -->
+  <div id="screen-result" class="screen">
+    <div id="result-emoji" class="result-emoji"></div>
+    <h1 id="result-title" class="result-title"></h1>
+    <p id="result-score" class="result-score"></p>
+    <div id="result-chips" class="result-chips"></div>
+    <button id="btn-hear-results" class="btn-hear-results" onclick="speakResults(state.roundResults)"></button>
+    <button id="btn-continue" class="btn-continue" onclick="continueGame()"></button>
+  </div>
 
 <script>
-/* ══════════════════════════════════
-   DATA
-══════════════════════════════════ */
+/* ════════════════════════════════
+   VOICE / TTS
+════════════════════════════════ */
+let LANG = 'he';
+let ttsVoiceHe = null;
+let ttsVoiceEn = null;
+
+function initVoices() {
+  const voices = window.speechSynthesis.getVoices();
+  if (!voices.length) return;
+  ttsVoiceHe = voices.find(v => v.lang.startsWith('he')) ||
+               voices.find(v => v.lang.startsWith('en')) ||
+               voices[0];
+  ttsVoiceEn = voices.find(v => v.lang.startsWith('en-US')) ||
+               voices.find(v => v.lang.startsWith('en')) ||
+               voices[0];
+  checkHebrewVoice();
+}
+if (window.speechSynthesis) {
+  window.speechSynthesis.addEventListener('voiceschanged', initVoices);
+  initVoices();
+}
+
+function speak(text) {
+  if (!window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  const voice = LANG === 'he' ? ttsVoiceHe : ttsVoiceEn;
+  if (voice) u.voice = voice;
+  u.lang = LANG === 'he' ? 'he-IL' : 'en-US';
+  u.rate = 0.85;
+  u.pitch = 1.1;
+  window.speechSynthesis.speak(u);
+}
+
+// Chrome keepalive for speechSynthesis
+setInterval(() => {
+  if (window.speechSynthesis && window.speechSynthesis.speaking) {
+    window.speechSynthesis.pause();
+    window.speechSynthesis.resume();
+  }
+}, 10000);
+
+function checkHebrewVoice() {
+  const warn = document.getElementById('voice-warning');
+  if (LANG === 'he' && ttsVoiceHe && !ttsVoiceHe.lang.startsWith('he')) {
+    warn.textContent = 'לא נמצא קול עברי במכשיר — ההשמעה תהיה באנגלית';
+    warn.classList.add('show');
+  } else {
+    warn.classList.remove('show');
+  }
+}
+
+/* ════════════════════════════════
+   LANGUAGE + DIRECTION
+════════════════════════════════ */
+function ui(he, en) { return LANG === 'he' ? he : en; }
+function t(country, field) {
+  return LANG === 'he' ? country[field + 'He'] : country[field + 'En'];
+}
+function setLang(lang) {
+  LANG = lang;
+  document.documentElement.lang = lang === 'he' ? 'he' : 'en';
+  document.documentElement.dir = lang === 'he' ? 'rtl' : 'ltr';
+}
+
+/* ════════════════════════════════
+   NUMBER FORMATTING
+════════════════════════════════ */
+function formatNum(n) {
+  if (LANG === 'he') return n.toLocaleString('he-IL');
+  return n.toLocaleString('en-US');
+}
+function formatPop(n) {
+  if (n >= 1_000_000_000) {
+    const v = (n / 1_000_000_000).toFixed(1);
+    return LANG === 'he' ? `${v} מיליארד` : `${v} billion`;
+  }
+  const v = Math.round(n / 1_000_000);
+  return LANG === 'he' ? `${v} מיליון` : `${v} million`;
+}
+
+/* ════════════════════════════════
+   COUNTRY DATA (27 entries)
+════════════════════════════════ */
 const COUNTRIES = [
-  { code:'fr', nameHe:'צרפת',         nameEn:'France',        capital:'פריז',           area:551695,    pop:68000000,    region:'europe'   },
-  { code:'de', nameHe:'גרמניה',        nameEn:'Germany',       capital:'ברלין',           area:357114,    pop:84000000,    region:'europe'   },
-  { code:'it', nameHe:'איטליה',        nameEn:'Italy',         capital:'רומא',            area:301340,    pop:59000000,    region:'europe'   },
-  { code:'es', nameHe:'ספרד',          nameEn:'Spain',         capital:'מדריד',           area:505990,    pop:47000000,    region:'europe'   },
-  { code:'gb', nameHe:'בריטניה',       nameEn:'United Kingdom',capital:'לונדון',          area:243610,    pop:67000000,    region:'europe'   },
-  { code:'us', nameHe:'ארצות הברית',   nameEn:'United States', capital:'וושינגטון',       area:9833517,   pop:331000000,   region:'americas' },
-  { code:'br', nameHe:'ברזיל',         nameEn:'Brazil',        capital:'ברזיליה',         area:8515767,   pop:215000000,   region:'americas' },
-  { code:'cn', nameHe:'סין',           nameEn:'China',         capital:'בייג\'ינג',       area:9596960,   pop:1400000000,  region:'asia'     },
-  { code:'jp', nameHe:'יפן',           nameEn:'Japan',         capital:'טוקיו',           area:377975,    pop:125000000,   region:'asia'     },
-  { code:'in', nameHe:'הודו',          nameEn:'India',         capital:'ניו דלהי',        area:3287263,   pop:1400000000,  region:'asia'     },
-  { code:'ru', nameHe:'רוסיה',         nameEn:'Russia',        capital:'מוסקווה',         area:17098242,  pop:144000000,   region:'europe'   },
-  { code:'au', nameHe:'אוסטרליה',      nameEn:'Australia',     capital:'קנברה',           area:7692024,   pop:26000000,    region:'americas' },
-  { code:'ca', nameHe:'קנדה',          nameEn:'Canada',        capital:'אוטווה',          area:9984670,   pop:38000000,    region:'americas' },
-  { code:'mx', nameHe:'מקסיקו',        nameEn:'Mexico',        capital:'מקסיקו סיטי',     area:1964375,   pop:130000000,   region:'americas' },
-  { code:'il', nameHe:'ישראל',         nameEn:'Israel',        capital:'ירושלים',         area:20770,     pop:9800000,     region:'asia'     },
-  { code:'eg', nameHe:'מצרים',         nameEn:'Egypt',         capital:'קהיר',            area:1002450,   pop:104000000,   region:'africa'   },
-  { code:'za', nameHe:'דרום אפריקה',   nameEn:'South Africa',  capital:'פרטוריה',         area:1219090,   pop:60000000,    region:'africa'   },
-  { code:'ng', nameHe:'ניגריה',        nameEn:'Nigeria',       capital:'אבוג\'ה',          area:923768,    pop:220000000,   region:'africa'   },
-  { code:'ar', nameHe:'ארגנטינה',      nameEn:'Argentina',     capital:'בואנוס איירס',    area:2780400,   pop:46000000,    region:'americas' },
-  { code:'tr', nameHe:'טורקיה',        nameEn:'Turkey',        capital:'אנקרה',           area:783356,    pop:85000000,    region:'asia'     },
-  { code:'kr', nameHe:'דרום קוריאה',   nameEn:'South Korea',   capital:'סיאול',           area:100210,    pop:52000000,    region:'asia'     },
-  { code:'se', nameHe:'שוודיה',        nameEn:'Sweden',        capital:'שטוקהולם',        area:450295,    pop:10000000,    region:'europe'   },
-  { code:'nl', nameHe:'הולנד',         nameEn:'Netherlands',   capital:'אמסטרדם',         area:41543,     pop:17000000,    region:'europe'   },
-  { code:'ch', nameHe:'שווייץ',        nameEn:'Switzerland',   capital:'ברן',             area:41285,     pop:8700000,     region:'europe'   },
-  { code:'gr', nameHe:'יוון',          nameEn:'Greece',        capital:'אתונה',           area:131957,    pop:10700000,    region:'europe'   },
-  { code:'pt', nameHe:'פורטוגל',       nameEn:'Portugal',      capital:'ליסבון',          area:92212,     pop:10300000,    region:'europe'   },
-  { code:'no', nameHe:'נורווגיה',      nameEn:'Norway',        capital:'אוסלו',           area:385207,    pop:5400000,     region:'europe'   },
+  { code:'fr', nameHe:'צרפת',       nameEn:'France',        capitalHe:'פריז',         capitalEn:'Paris',          area:551695,   pop:68000000,   continentHe:'אירופה',   continentEn:'Europe',   languageHe:'צרפתית',            languageEn:'French',          region:'europe'   },
+  { code:'de', nameHe:'גרמניה',      nameEn:'Germany',       capitalHe:'ברלין',         capitalEn:'Berlin',         area:357114,   pop:84000000,   continentHe:'אירופה',   continentEn:'Europe',   languageHe:'גרמנית',             languageEn:'German',          region:'europe'   },
+  { code:'it', nameHe:'איטליה',      nameEn:'Italy',         capitalHe:'רומא',          capitalEn:'Rome',           area:301340,   pop:59000000,   continentHe:'אירופה',   continentEn:'Europe',   languageHe:'איטלקית',            languageEn:'Italian',         region:'europe'   },
+  { code:'es', nameHe:'ספרד',        nameEn:'Spain',         capitalHe:'מדריד',         capitalEn:'Madrid',         area:505990,   pop:47000000,   continentHe:'אירופה',   continentEn:'Europe',   languageHe:'ספרדית',             languageEn:'Spanish',         region:'europe'   },
+  { code:'gb', nameHe:'בריטניה',     nameEn:'United Kingdom',capitalHe:'לונדון',        capitalEn:'London',         area:243610,   pop:67000000,   continentHe:'אירופה',   continentEn:'Europe',   languageHe:'אנגלית',             languageEn:'English',         region:'europe'   },
+  { code:'us', nameHe:'ארצות הברית', nameEn:'United States', capitalHe:'וושינגטון',     capitalEn:'Washington DC',  area:9833517,  pop:331000000,  continentHe:'אמריקה',   continentEn:'Americas', languageHe:'אנגלית',             languageEn:'English',         region:'americas' },
+  { code:'br', nameHe:'ברזיל',       nameEn:'Brazil',        capitalHe:'ברזיליה',       capitalEn:'Brasilia',       area:8515767,  pop:215000000,  continentHe:'אמריקה',   continentEn:'Americas', languageHe:'פורטוגזית',          languageEn:'Portuguese',      region:'americas' },
+  { code:'cn', nameHe:'סין',         nameEn:'China',         capitalHe:'בייג\'ינג',     capitalEn:'Beijing',        area:9596960,  pop:1400000000, continentHe:'אסיה',     continentEn:'Asia',     languageHe:'סינית מנדרינית',     languageEn:'Mandarin Chinese',region:'asia'     },
+  { code:'jp', nameHe:'יפן',         nameEn:'Japan',         capitalHe:'טוקיו',         capitalEn:'Tokyo',          area:377975,   pop:125000000,  continentHe:'אסיה',     continentEn:'Asia',     languageHe:'יפנית',              languageEn:'Japanese',        region:'asia'     },
+  { code:'in', nameHe:'הודו',        nameEn:'India',         capitalHe:'ניו דלהי',      capitalEn:'New Delhi',      area:3287263,  pop:1400000000, continentHe:'אסיה',     continentEn:'Asia',     languageHe:'הינדי',              languageEn:'Hindi',           region:'asia'     },
+  { code:'ru', nameHe:'רוסיה',       nameEn:'Russia',        capitalHe:'מוסקווה',       capitalEn:'Moscow',         area:17098242, pop:144000000,  continentHe:'אירופה',   continentEn:'Europe',   languageHe:'רוסית',              languageEn:'Russian',         region:'europe'   },
+  { code:'au', nameHe:'אוסטרליה',    nameEn:'Australia',     capitalHe:'קנברה',         capitalEn:'Canberra',       area:7692024,  pop:26000000,   continentHe:'אוקיאניה', continentEn:'Oceania',  languageHe:'אנגלית',             languageEn:'English',         region:'americas' },
+  { code:'ca', nameHe:'קנדה',        nameEn:'Canada',        capitalHe:'אוטווה',        capitalEn:'Ottawa',         area:9984670,  pop:38000000,   continentHe:'אמריקה',   continentEn:'Americas', languageHe:'אנגלית וצרפתית',     languageEn:'English & French',region:'americas' },
+  { code:'mx', nameHe:'מקסיקו',      nameEn:'Mexico',        capitalHe:'מקסיקו סיטי',   capitalEn:'Mexico City',    area:1964375,  pop:130000000,  continentHe:'אמריקה',   continentEn:'Americas', languageHe:'ספרדית',             languageEn:'Spanish',         region:'americas' },
+  { code:'il', nameHe:'ישראל',       nameEn:'Israel',        capitalHe:'ירושלים',       capitalEn:'Jerusalem',      area:20770,    pop:9800000,    continentHe:'אסיה',     continentEn:'Asia',     languageHe:'עברית',              languageEn:'Hebrew',          region:'asia'     },
+  { code:'eg', nameHe:'מצרים',       nameEn:'Egypt',         capitalHe:'קהיר',          capitalEn:'Cairo',          area:1002450,  pop:104000000,  continentHe:'אפריקה',   continentEn:'Africa',   languageHe:'ערבית',              languageEn:'Arabic',          region:'africa'   },
+  { code:'za', nameHe:'דרום אפריקה', nameEn:'South Africa',  capitalHe:'פרטוריה',       capitalEn:'Pretoria',       area:1219090,  pop:60000000,   continentHe:'אפריקה',   continentEn:'Africa',   languageHe:'זולו ואנגלית',       languageEn:'Zulu & English',  region:'africa'   },
+  { code:'ng', nameHe:'ניגריה',      nameEn:'Nigeria',       capitalHe:'אבוג\'ה',       capitalEn:'Abuja',          area:923768,   pop:220000000,  continentHe:'אפריקה',   continentEn:'Africa',   languageHe:'אנגלית',             languageEn:'English',         region:'africa'   },
+  { code:'ar', nameHe:'ארגנטינה',    nameEn:'Argentina',     capitalHe:'בואנוס איירס',  capitalEn:'Buenos Aires',   area:2780400,  pop:46000000,   continentHe:'אמריקה',   continentEn:'Americas', languageHe:'ספרדית',             languageEn:'Spanish',         region:'americas' },
+  { code:'tr', nameHe:'טורקיה',      nameEn:'Turkey',        capitalHe:'אנקרה',         capitalEn:'Ankara',         area:783356,   pop:85000000,   continentHe:'אסיה',     continentEn:'Asia',     languageHe:'טורקית',             languageEn:'Turkish',         region:'asia'     },
+  { code:'kr', nameHe:'דרום קוריאה', nameEn:'South Korea',   capitalHe:'סיאול',         capitalEn:'Seoul',          area:100210,   pop:52000000,   continentHe:'אסיה',     continentEn:'Asia',     languageHe:'קוריאנית',           languageEn:'Korean',          region:'asia'     },
+  { code:'se', nameHe:'שוודיה',      nameEn:'Sweden',        capitalHe:'שטוקהולם',      capitalEn:'Stockholm',      area:450295,   pop:10000000,   continentHe:'אירופה',   continentEn:'Europe',   languageHe:'שוודית',             languageEn:'Swedish',         region:'europe'   },
+  { code:'nl', nameHe:'הולנד',       nameEn:'Netherlands',   capitalHe:'אמסטרדם',       capitalEn:'Amsterdam',      area:41543,    pop:17000000,   continentHe:'אירופה',   continentEn:'Europe',   languageHe:'הולנדית',            languageEn:'Dutch',           region:'europe'   },
+  { code:'ch', nameHe:'שווייץ',      nameEn:'Switzerland',   capitalHe:'ברן',           capitalEn:'Bern',           area:41285,    pop:8700000,    continentHe:'אירופה',   continentEn:'Europe',   languageHe:'גרמנית וצרפתית',     languageEn:'German & French', region:'europe'   },
+  { code:'gr', nameHe:'יוון',        nameEn:'Greece',        capitalHe:'אתונה',         capitalEn:'Athens',         area:131957,   pop:10700000,   continentHe:'אירופה',   continentEn:'Europe',   languageHe:'יוונית',             languageEn:'Greek',           region:'europe'   },
+  { code:'pt', nameHe:'פורטוגל',     nameEn:'Portugal',      capitalHe:'ליסבון',        capitalEn:'Lisbon',         area:92212,    pop:10300000,   continentHe:'אירופה',   continentEn:'Europe',   languageHe:'פורטוגזית',          languageEn:'Portuguese',      region:'europe'   },
+  { code:'no', nameHe:'נורווגיה',    nameEn:'Norway',        capitalHe:'אוסלו',         capitalEn:'Oslo',           area:385207,   pop:5400000,    continentHe:'אירופה',   continentEn:'Europe',   languageHe:'נורווגית',           languageEn:'Norwegian',       region:'europe'   },
 ];
 
-/* ══════════════════════════════════
-   STATE
-══════════════════════════════════ */
-const state = {
-  deck: [],           // shuffled copy of COUNTRIES
-  roundIndex: 0,      // which batch of 5 we're on
-  batch: [],          // current 5 countries
-  quizIndex: 0,       // which card in the batch we're quizzing
-  quizPhase: 'name',  // 'name' | 'detail'
-  roundCorrect: 0,    // correct answers this round
-  roundResults: [],   // [{country, nameOk, detailOk}]
-};
-
-/* ══════════════════════════════════
+/* ════════════════════════════════
    HELPERS
-══════════════════════════════════ */
+════════════════════════════════ */
+function flagUrl(code) {
+  return `https://flagcdn.com/w320/${code}.png`;
+}
+
 function shuffle(arr) {
   const a = [...arr];
   for (let i = a.length - 1; i > 0; i--) {
@@ -707,457 +514,426 @@ function shuffle(arr) {
   return a;
 }
 
-function flagUrl(code) {
-  return `https://flagcdn.com/w160/${code}.png`;
+function pickDistractors(correct, pool, count, field) {
+  const others = pool.filter(c => c.code !== correct.code);
+  const shuffled = shuffle(others);
+  return shuffled.slice(0, count);
 }
 
-function formatNum(n) {
-  return n.toLocaleString('he-IL');
+/* ════════════════════════════════
+   SPEAK HELPERS
+════════════════════════════════ */
+function speakFact(c, factType) {
+  const name = t(c, 'name');
+  const sentences = {
+    name:      name,
+    capital:   LANG === 'he' ? `בירת ${name} היא ${t(c,'capital')}` : `The capital of ${name} is ${t(c,'capital')}`,
+    area:      LANG === 'he' ? `שטח ${name} הוא ${formatNum(c.area)} קילומטר רבוע` : `The area of ${name} is ${formatNum(c.area)} square kilometers`,
+    pop:       LANG === 'he' ? `ב${name} גרים ${formatPop(c.pop)}` : `${name} has a population of ${formatPop(c.pop)}`,
+    continent: LANG === 'he' ? `${name} נמצאת ביבשת ${t(c,'continent')}` : `${name} is in ${t(c,'continent')}`,
+    language:  LANG === 'he' ? `ב${name} מדברים ${t(c,'language')}` : `In ${name} people speak ${t(c,'language')}`,
+  };
+  speak(sentences[factType]);
 }
 
+function speakResults(results) {
+  const correct = results.filter(r => r.nameOk).length;
+  const total = results.length;
+  const text = LANG === 'he'
+    ? `זיהית נכון ${correct} מתוך ${total} דגלים! ${correct === total ? 'מדהים!' : 'כל הכבוד!'}`
+    : `You got ${correct} out of ${total} flags correct! ${correct === total ? 'Amazing!' : 'Well done!'}`;
+  speak(text);
+}
+
+/* ════════════════════════════════
+   GAME STATE
+════════════════════════════════ */
+const state = {
+  deck: [],
+  roundIndex: 0,
+  batch: [],
+  quizIndex: 0,
+  quizPhase: 'name',
+  roundResults: [],
+  matchedPairs: 0,
+};
+
+/* ════════════════════════════════
+   SCREEN NAVIGATION
+════════════════════════════════ */
 function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   window.scrollTo(0, 0);
 }
 
-/* ── Text-to-Speech ── */
-let ttsVoice = null;
-let ttsReady = false;
-let ttsNoHebrew = false;
-
-function initVoices() {
-  if (!window.speechSynthesis) return;
-  const voices = window.speechSynthesis.getVoices();
-  if (!voices.length) return;
-  ttsReady = true;
-  // 1. prefer any Hebrew voice
-  ttsVoice = voices.find(v => v.lang.toLowerCase().startsWith('he')) || null;
-  // 2. fall back to English, then first available
-  if (!ttsVoice) {
-    ttsNoHebrew = true;
-    ttsVoice = voices.find(v => v.lang.toLowerCase().startsWith('en-')) || voices[0] || null;
-  }
-  // show warning banner if no Hebrew voice
-  const banner = document.getElementById('no-hebrew-banner');
-  if (banner) banner.style.display = ttsNoHebrew ? 'block' : 'none';
+function chooseLang(lang) {
+  setLang(lang);
+  checkHebrewVoice();
+  renderWelcome();
+  showScreen('screen-welcome');
 }
 
-if (window.speechSynthesis) {
-  window.speechSynthesis.addEventListener('voiceschanged', initVoices);
-  initVoices(); // works immediately in Firefox
+/* ════════════════════════════════
+   WELCOME SCREEN
+════════════════════════════════ */
+function renderWelcome() {
+  document.getElementById('welcome-title').textContent = ui('משחק זכרון דגלים 🌍', 'Flags Memory Game 🌍');
+  document.getElementById('welcome-sub').textContent = ui('נלמד דגלים של מדינות העולם', 'Learn flags of world countries');
+  document.getElementById('btn-start').textContent = ui('בואו נשחק! 🎉', "Let's Play! 🎉");
+  document.querySelector('.btn-change-lang').textContent = ui('🔄 שנה שפה', '🔄 Change Language');
 }
 
-function showTtsStatus(text) {
-  const bar   = document.getElementById('tts-status');
-  const label = document.getElementById('tts-status-text');
-  if (bar && label) { label.textContent = text; bar.classList.add('visible'); }
-}
-function hideTtsStatus() {
-  document.getElementById('tts-status')?.classList.remove('visible');
-}
-
-function speak(text, onEnd) {
-  if (!window.speechSynthesis) { if (onEnd) onEnd(); return; }
-  window.speechSynthesis.cancel();
-  showTtsStatus(text);
-  const u = new SpeechSynthesisUtterance(text);
-  if (ttsVoice) u.voice = ttsVoice;
-  u.lang = ttsVoice ? ttsVoice.lang : 'he-IL';
-  u.rate = 0.85;
-  u.pitch = 1.1;
-  u.onend  = () => { hideTtsStatus(); if (onEnd) onEnd(); };
-  u.onerror = () => { hideTtsStatus(); if (onEnd) onEnd(); };
-  // Chrome bug: synthesis can get stuck after page is backgrounded
-  if (window.speechSynthesis.paused) window.speechSynthesis.resume();
-  window.speechSynthesis.speak(u);
-}
-
-function speakSequence(texts, delay, onAllDone) {
-  let i = 0;
-  function next() {
-    if (i >= texts.length) { if (onAllDone) onAllDone(); return; }
-    speak(texts[i++], () => setTimeout(next, delay));
-  }
-  next();
-}
-
-/* ══════════════════════════════════
-   GAME FLOW
-══════════════════════════════════ */
+/* ════════════════════════════════
+   GAME LOGIC
+════════════════════════════════ */
 function startGame() {
   state.deck = shuffle(COUNTRIES);
   state.roundIndex = 0;
-  loadStudyScreen();
+  state.matchedPairs = 0;
+  nextRound();
 }
 
-function loadStudyScreen() {
+function nextRound() {
   const start = state.roundIndex * 5;
-  // wrap around if we've used all countries
   if (start >= state.deck.length) {
+    // All done — restart
     state.deck = shuffle(COUNTRIES);
     state.roundIndex = 0;
   }
   state.batch = state.deck.slice(state.roundIndex * 5, state.roundIndex * 5 + 5);
-  if (state.batch.length < 5) {
+  if (state.batch.length === 0) {
     state.deck = shuffle(COUNTRIES);
     state.roundIndex = 0;
     state.batch = state.deck.slice(0, 5);
   }
-
-  // Render study cards
-  const grid = document.getElementById('study-grid');
-  grid.innerHTML = '';
-  state.batch.forEach(c => {
-    grid.appendChild(buildStudyCard(c));
-  });
-
-  document.getElementById('study-round-badge').textContent =
-    `סבב ${state.roundIndex + 1}`;
-
-  showScreen('screen-study');
-
-  // Auto-read all 5 names with a pause between each
-  setTimeout(() => {
-    const names = state.batch.map(c => c.nameHe);
-    speakSequence(names, 600);
-  }, 800);
-}
-
-function buildStudyCard(c) {
-  const card = document.createElement('div');
-  card.className = 'study-card';
-
-  card.innerHTML = `
-    <div class="study-card-region-bar region-${c.region}"></div>
-    <div class="study-card-flag">
-      <img src="${flagUrl(c.code)}" alt="${c.nameHe}" loading="lazy" />
-    </div>
-    <div class="study-card-body">
-      <div class="study-card-name">${c.nameHe}</div>
-      <div class="study-card-speak">
-        <button class="btn-speak" onclick="speak('${c.nameHe.replace(/'/g, "\\'")}')">
-          🔊 <span>שמע שם</span>
-        </button>
-      </div>
-      <div class="study-info-row">
-        <span class="study-info-label">בירה</span>
-        <span class="study-info-val">${c.capital}</span>
-      </div>
-      <div class="study-info-row">
-        <span class="study-info-label">שטח</span>
-        <span class="study-info-val">${formatNum(c.area)} קמ"ר</span>
-      </div>
-      <div class="study-info-row">
-        <span class="study-info-label">אוכלוסייה</span>
-        <span class="study-info-val">${formatNum(c.pop)}</span>
-      </div>
-    </div>
-  `;
-  return card;
-}
-
-/* ══════════════════════════════════
-   QUIZ
-══════════════════════════════════ */
-function startQuiz() {
-  window.speechSynthesis && window.speechSynthesis.cancel();
+  state.roundResults = [];
   state.quizIndex = 0;
   state.quizPhase = 'name';
-  state.roundCorrect = 0;
-  state.roundResults = state.batch.map(c => ({ country: c, nameOk: false, detailOk: false }));
-  showScreen('screen-quiz');
-  renderQuizCard();
+  renderStudyScreen();
+  showScreen('screen-study');
 }
 
-function renderQuizCard() {
+/* ════════════════════════════════
+   STUDY SCREEN
+════════════════════════════════ */
+function renderStudyScreen() {
+  const totalRounds = Math.ceil(state.deck.length / 5);
+  const currentRound = state.roundIndex + 1;
+
+  document.getElementById('study-title').textContent = ui('📖 לומדים דגלים', '📖 Learning Flags');
+  document.getElementById('study-round').textContent = ui(`סבב ${currentRound} מתוך ${totalRounds}`, `Round ${currentRound} of ${totalRounds}`);
+  document.getElementById('btn-start-quiz').textContent = ui('יאללה, בואו נשחק! 🧠', "Let's Quiz! 🧠");
+
+  const grid = document.getElementById('study-grid');
+  grid.innerHTML = '';
+
+  state.batch.forEach(c => {
+    const name = t(c, 'name');
+    const card = document.createElement('div');
+    card.className = 'study-card';
+
+    const facts = [
+      { label: ui('בירה', 'Capital'),      value: t(c, 'capital'),    type: 'capital' },
+      { label: ui('שטח', 'Area'),          value: formatNum(c.area) + ui(' קמ"ר', ' km²'), type: 'area' },
+      { label: ui('אוכלוסייה', 'Population'), value: formatPop(c.pop), type: 'pop' },
+      { label: ui('יבשת', 'Continent'),    value: t(c, 'continent'),  type: 'continent' },
+      { label: ui('שפה', 'Language'),      value: t(c, 'language'),   type: 'language' },
+    ];
+
+    let factsHtml = facts.map(f => {
+      const cJson = JSON.stringify(c).replace(/'/g, '&#39;').replace(/"/g, '&quot;');
+      return `
+        <div class="fact-row">
+          <span class="fact-label">${f.label}:</span>
+          <span class="fact-value">${f.value}</span>
+          <button class="btn-hear-fact" onclick="event.stopPropagation(); speakFact(COUNTRIES.find(x=>x.code==='${c.code}'), '${f.type}')">🔊</button>
+        </div>
+      `;
+    }).join('');
+
+    card.innerHTML = `
+      <img class="study-card-flag" src="${flagUrl(c.code)}" alt="${name}" loading="lazy" />
+      <div class="study-card-body">
+        <div class="study-card-name">
+          <span>${name}</span>
+          <button class="btn-hear-name" onclick="event.stopPropagation(); speakFact(COUNTRIES.find(x=>x.code==='${c.code}'), 'name')">🔊</button>
+        </div>
+        ${factsHtml}
+      </div>
+    `;
+
+    grid.appendChild(card);
+  });
+}
+
+/* ════════════════════════════════
+   QUIZ
+════════════════════════════════ */
+function startQuiz() {
+  state.quizIndex = 0;
+  state.quizPhase = 'name';
+  state.roundResults = [];
+  showScreen('screen-quiz');
+  renderQuizQuestion();
+}
+
+function renderQuizQuestion() {
   const total = state.batch.length;
-  const idx   = state.quizIndex;
-  const c     = state.batch[idx];
+  const current = state.quizIndex + 1;
+  const pct = ((state.quizIndex) / total) * 100;
 
-  // progress
-  document.getElementById('progress-fill').style.width =
-    `${(idx / total) * 100}%`;
-  document.getElementById('quiz-progress-text').textContent =
-    `${idx + 1} / ${total}`;
+  document.getElementById('quiz-progress-label').textContent = ui(`שאלה ${current} מתוך ${total}`, `Question ${current} of ${total}`);
+  document.getElementById('quiz-progress-fill').style.width = pct + '%';
 
+  const c = state.batch[state.quizIndex];
   const body = document.getElementById('quiz-body');
-  body.innerHTML = '';
 
   if (state.quizPhase === 'name') {
-    renderNamePhase(body, c);
+    renderNamePhase(c, body);
   } else {
-    renderDetailPhase(body, c);
+    renderDetailPhase(c, body);
   }
 }
 
-/* ── Phase 1: Which country is this? ── */
-function renderNamePhase(body, c) {
-  // Question label
-  const q = el('div', 'quiz-question-label', '🌍 איזו מדינה זו?');
-  body.appendChild(q);
+function renderNamePhase(c, body) {
+  const questionText = ui('איזו מדינה זו?', 'Which country is this?');
+  const distractors = pickDistractors(c, COUNTRIES, 3);
+  const options = shuffle([c, ...distractors]);
 
-  // Flag
-  const wrap = el('div', 'quiz-flag-wrap');
-  const img = document.createElement('img');
-  img.className = 'quiz-flag-img';
-  img.src = flagUrl(c.code);
-  img.alt = '?';
-  wrap.appendChild(img);
+  let optionsHtml = options.map(opt => {
+    const nameText = t(opt, 'name');
+    const isCorrect = opt.code === c.code;
+    const escapedName = nameText.replace(/'/g, "\\'");
+    return `
+      <div class="option-row">
+        <button class="btn-hear-opt" onclick="event.stopPropagation(); speak('${escapedName}')">🔊</button>
+        <button class="btn-option" data-code="${opt.code}" onclick="handleNameAnswer(this, ${isCorrect}, '${c.code}')">
+          ${nameText}
+        </button>
+      </div>
+    `;
+  }).join('');
 
-  const hearBtn = el('button', 'btn-hear-question', '🔊 שמע שוב את השאלה');
-  hearBtn.onclick = () => speak('איזו מדינה זו?');
-  wrap.appendChild(hearBtn);
-  body.appendChild(wrap);
-
-  // Build 4 options: correct + 3 random wrong
-  const options = buildOptions(c, 'nameHe');
-  const grid = el('div', 'quiz-options');
-  options.forEach(opt => {
-    const btn = document.createElement('button');
-    btn.className = 'btn-option';
-    btn.innerHTML = `<span class="sound-icon">🔊</span> ${opt.nameHe}`;
-    btn.setAttribute('data-code', opt.code);
-    btn.onclick = () => {
-      document.querySelectorAll('.btn-option').forEach(b => b.classList.remove('tts-active'));
-      btn.classList.add('tts-active');
-      speak(opt.nameHe, () => btn.classList.remove('tts-active'));
-      handleNameAnswer(btn, opt.code === c.code, c);
-    };
-    grid.appendChild(btn);
-  });
-  body.appendChild(grid);
-
-  // Auto-read: question then all 4 options in sequence
-  setTimeout(() => {
-    speakSequence(['איזו מדינה זו?', ...options.map(o => o.nameHe)], 450);
-  }, 400);
+  const escapedQ = questionText.replace(/'/g, "\\'");
+  body.innerHTML = `
+    <div class="quiz-question-row">
+      <button class="btn-hear-question" onclick="event.stopPropagation(); speak('${escapedQ}')">🔊</button>
+      <span class="quiz-question-text">${questionText}</span>
+    </div>
+    <img class="quiz-flag" src="${flagUrl(c.code)}" alt="?" />
+    <div class="options-list">${optionsHtml}</div>
+    <button id="btn-next" class="btn-next" onclick="nextQuizStep()">${ui('הדגל הבא ➡️', 'Next Flag ➡️')}</button>
+  `;
 }
 
-function handleNameAnswer(btn, isCorrect, c) {
-  const allBtns = document.querySelectorAll('.btn-option');
-  allBtns.forEach(b => b.disabled = true);
+function renderDetailPhase(c, body) {
+  const name = t(c, 'name');
+  // Pick a random detail question
+  const detailTypes = ['capital', 'continent', 'language'];
+  const dtype = detailTypes[Math.floor(Math.random() * detailTypes.length)];
 
-  if (isCorrect) {
-    btn.classList.add('correct');
-    state.roundResults[state.quizIndex].nameOk = true;
-    speak(c.nameHe + '! נכון מאוד!', () => {
-      setTimeout(() => {
-        state.quizPhase = 'detail';
-        renderQuizCard();
-      }, 400);
-    });
+  let questionText, correctVal, optionValues;
+
+  if (dtype === 'capital') {
+    questionText = ui(`מה הבירה של ${name}?`, `What is the capital of ${name}?`);
+    correctVal = t(c, 'capital');
+    const others = shuffle(COUNTRIES.filter(x => x.code !== c.code && t(x, 'capital') !== correctVal));
+    optionValues = shuffle([
+      { text: correctVal, correct: true },
+      ...others.slice(0, 3).map(x => ({ text: t(x, 'capital'), correct: false }))
+    ]);
+  } else if (dtype === 'continent') {
+    questionText = ui(`באיזו יבשת נמצאת ${name}?`, `Which continent is ${name} in?`);
+    correctVal = t(c, 'continent');
+    const allContinents = [...new Set(COUNTRIES.map(x => t(x, 'continent')))].filter(v => v !== correctVal);
+    const shuffledCont = shuffle(allContinents);
+    optionValues = shuffle([
+      { text: correctVal, correct: true },
+      ...shuffledCont.slice(0, 3).map(v => ({ text: v, correct: false }))
+    ]);
   } else {
-    btn.classList.add('wrong');
-    // highlight correct
-    allBtns.forEach(b => {
-      if (b.getAttribute('data-code') === c.code) b.classList.add('correct');
-    });
-    speak('לא בדיוק... זו ' + c.nameHe, () => {
-      setTimeout(() => {
-        state.quizPhase = 'detail';
-        renderQuizCard();
-      }, 400);
-    });
-  }
-}
-
-/* ── Phase 2: What do you remember? ── */
-function renderDetailPhase(body, c) {
-  const q = el('div', 'quiz-question-label', `🤔 מה אתה זוכר על ${c.nameHe}?`);
-  body.appendChild(q);
-
-  const wrap = el('div', 'quiz-flag-wrap');
-  const img = document.createElement('img');
-  img.className = 'quiz-flag-img';
-  img.src = flagUrl(c.code);
-  img.alt = c.nameHe;
-  wrap.appendChild(img);
-  // Show country name now
-  const nameTag = el('div', '', c.nameHe);
-  nameTag.style.cssText = 'font-size:1.5rem;font-weight:900;color:#1a237e;';
-  wrap.appendChild(nameTag);
-  body.appendChild(wrap);
-
-  // Pick a random detail to ask about
-  const detailType = Math.random() < 0.5 ? 'capital' : 'pop';
-  const box = el('div', 'detail-box');
-
-  let question, correctAnswer, wrongAnswers;
-
-  if (detailType === 'capital') {
-    question = `מהי בירת ${c.nameHe}?`;
-    correctAnswer = c.capital;
-    // 3 wrong capitals from other countries in batch or random
-    const pool = shuffle(COUNTRIES.filter(x => x.code !== c.code));
-    wrongAnswers = pool.slice(0, 3).map(x => x.capital);
-  } else {
-    question = `כמה אנשים גרים ב${c.nameHe}?`;
-    const popStr = n => {
-      if (n >= 1_000_000_000) return `${(n / 1_000_000_000).toFixed(1)} מיליארד`;
-      if (n >= 1_000_000)     return `${Math.round(n / 1_000_000)} מיליון`;
-      return formatNum(n);
-    };
-    correctAnswer = popStr(c.pop);
-    const pool = shuffle(COUNTRIES.filter(x => x.code !== c.code));
-    wrongAnswers = pool.slice(0, 3).map(x => popStr(x.pop));
-    // deduplicate
-    const unique = [...new Set(wrongAnswers)].slice(0, 3);
-    while (unique.length < 3) unique.push(popStr(pool[unique.length + 3]?.pop ?? 1000000));
-    wrongAnswers = unique;
+    questionText = ui(`איזו שפה מדברים ב${name}?`, `What language is spoken in ${name}?`);
+    correctVal = t(c, 'language');
+    const others = shuffle(COUNTRIES.filter(x => x.code !== c.code && t(x, 'language') !== correctVal));
+    optionValues = shuffle([
+      { text: correctVal, correct: true },
+      ...others.slice(0, 3).map(x => ({ text: t(x, 'language'), correct: false }))
+    ]);
   }
 
-  const label = el('div', 'detail-label', question);
-  box.appendChild(label);
+  // Ensure exactly 4 options
+  if (optionValues.length > 4) optionValues = optionValues.slice(0, 4);
 
-  const opts = shuffle([correctAnswer, ...wrongAnswers]);
-  const dOpts = el('div', 'detail-options');
+  let optionsHtml = optionValues.map(opt => {
+    const escapedText = opt.text.replace(/'/g, "\\'");
+    return `
+      <div class="option-row">
+        <button class="btn-hear-opt" onclick="event.stopPropagation(); speak('${escapedText}')">🔊</button>
+        <button class="btn-option" data-correct="${opt.correct}" onclick="handleDetailAnswer(this, ${opt.correct}, '${c.code}')">
+          ${opt.text}
+        </button>
+      </div>
+    `;
+  }).join('');
 
-  opts.forEach(opt => {
-    const btn = document.createElement('button');
-    btn.className = 'btn-detail';
-    btn.innerHTML = `<span class="sound-icon">🔊</span> ${opt}`;
-    btn.setAttribute('data-answer', opt);
-    btn.onclick = () => {
-      document.querySelectorAll('.btn-detail').forEach(b => b.classList.remove('tts-active'));
-      btn.classList.add('tts-active');
-      speak(opt, () => btn.classList.remove('tts-active'));
-      handleDetailAnswer(btn, opt === correctAnswer, correctAnswer, c);
-    };
-    dOpts.appendChild(btn);
-  });
-
-  box.appendChild(dOpts);
-  body.appendChild(box);
-
-  // Auto-read: question then all options in sequence
-  setTimeout(() => {
-    speakSequence([question, ...opts], 450);
-  }, 400);
-}
-
-function handleDetailAnswer(btn, isCorrect, correctAnswer, c) {
-  const allBtns = document.querySelectorAll('.btn-detail');
-  allBtns.forEach(b => b.disabled = true);
-
-  if (isCorrect) {
-    btn.classList.add('correct');
-    state.roundResults[state.quizIndex].detailOk = true;
-    speak('כן! נכון!');
-  } else {
-    btn.classList.add('wrong');
-    allBtns.forEach(b => { if (b.dataset.answer === correctAnswer) b.classList.add('correct'); });
-    speak('לא בדיוק');
-  }
-
-  // Show Next button
-  const nextBtn = el('button', 'btn-next', '');
+  const escapedQ = questionText.replace(/'/g, "\\'");
   const isLast = state.quizIndex >= state.batch.length - 1;
-  nextBtn.textContent = isLast ? 'לראות תוצאות 🏆' : 'הדגל הבא ➡️';
-  nextBtn.onclick = () => {
-    if (isLast) {
-      showResult();
-    } else {
-      state.quizIndex++;
-      state.quizPhase = 'name';
-      renderQuizCard();
-    }
-  };
-  document.getElementById('quiz-body').appendChild(nextBtn);
+  const nextLabel = isLast ? ui('לראות תוצאות 🏆', 'See Results 🏆') : ui('הדגל הבא ➡️', 'Next Flag ➡️');
+
+  body.innerHTML = `
+    <div class="quiz-question-row">
+      <button class="btn-hear-question" onclick="event.stopPropagation(); speak('${escapedQ}')">🔊</button>
+      <span class="quiz-question-text">${questionText}</span>
+    </div>
+    <img class="quiz-flag" src="${flagUrl(c.code)}" alt="${name}" />
+    <div class="quiz-country-label">${name}</div>
+    <div class="options-list">${optionsHtml}</div>
+    <button id="btn-next" class="btn-next" onclick="nextQuizStep()">${nextLabel}</button>
+  `;
 }
 
-/* ══════════════════════════════════
-   RESULT SCREEN
-══════════════════════════════════ */
-function showResult() {
-  const results = state.roundResults;
-  const correct = results.filter(r => r.nameOk).length;
-  const total   = results.length;
+function handleNameAnswer(btn, isCorrect, correctCode) {
+  const allBtns = document.querySelectorAll('.btn-option');
+  const allHearBtns = document.querySelectorAll('.btn-hear-opt');
+  allBtns.forEach(b => b.disabled = true);
+  allHearBtns.forEach(b => b.disabled = true);
 
-  let emoji, title, msg;
-  if (correct === total) {
-    emoji = '🌟'; title = 'מדהים! ענית נכון על הכל!';
-    msg = `כל ${total} הדגלים זוהו נכון!`;
-    speak('מדהים! ענית נכון על הכל!');
-  } else if (correct >= Math.ceil(total / 2)) {
-    emoji = '😊'; title = 'כל הכבוד!';
-    msg = `זיהית נכון ${correct} מתוך ${total} דגלים`;
-    speak('כל הכבוד!');
+  // Highlight correct and wrong
+  allBtns.forEach(b => {
+    const country = COUNTRIES.find(x => x.code === b.dataset.code);
+    if (b.dataset.code === correctCode) {
+      b.classList.add('correct');
+    } else if (b === btn && !isCorrect) {
+      b.classList.add('wrong');
+    }
+  });
+
+  // Speak selected country name
+  const selectedCountry = COUNTRIES.find(x => x.code === btn.dataset.code);
+  if (selectedCountry) speak(t(selectedCountry, 'name'));
+
+  // Record result
+  if (!state.roundResults[state.quizIndex]) {
+    state.roundResults[state.quizIndex] = { country: COUNTRIES.find(x => x.code === correctCode), nameOk: isCorrect, detailOk: false };
   } else {
-    emoji = '💪'; title = 'ננסה שוב!';
-    msg = `זיהית ${correct} מתוך ${total} דגלים — בפעם הבאה יהיה יותר טוב!`;
-    speak('ננסה שוב!');
+    state.roundResults[state.quizIndex].nameOk = isCorrect;
+  }
+
+  document.getElementById('btn-next').style.display = 'inline-block';
+}
+
+function handleDetailAnswer(btn, isCorrect, correctCode) {
+  const allBtns = document.querySelectorAll('.btn-option');
+  const allHearBtns = document.querySelectorAll('.btn-hear-opt');
+  allBtns.forEach(b => b.disabled = true);
+  allHearBtns.forEach(b => b.disabled = true);
+
+  allBtns.forEach(b => {
+    if (b.dataset.correct === 'true') {
+      b.classList.add('correct');
+    } else if (b === btn && !isCorrect) {
+      b.classList.add('wrong');
+    }
+  });
+
+  // Speak selected option
+  speak(btn.textContent.trim());
+
+  // Record detail result
+  if (!state.roundResults[state.quizIndex]) {
+    state.roundResults[state.quizIndex] = { country: COUNTRIES.find(x => x.code === correctCode), nameOk: false, detailOk: isCorrect };
+  } else {
+    state.roundResults[state.quizIndex].detailOk = isCorrect;
+  }
+
+  document.getElementById('btn-next').style.display = 'inline-block';
+}
+
+function nextQuizStep() {
+  if (state.quizPhase === 'name') {
+    // Move to detail phase for same country
+    state.quizPhase = 'detail';
+    renderQuizQuestion();
+  } else {
+    // Move to next country or results
+    state.quizIndex++;
+    if (state.quizIndex >= state.batch.length) {
+      showResults();
+    } else {
+      state.quizPhase = 'name';
+      renderQuizQuestion();
+    }
+  }
+}
+
+/* ════════════════════════════════
+   RESULTS SCREEN
+════════════════════════════════ */
+function showResults() {
+  const correct = state.roundResults.filter(r => r.nameOk).length;
+  const total = state.roundResults.length;
+  const pct = correct / total;
+
+  // Update progress bar to 100%
+  document.getElementById('quiz-progress-fill').style.width = '100%';
+
+  let emoji, title;
+  if (pct === 1) {
+    emoji = '🏆';
+    title = ui('מושלם!', 'Perfect!');
+  } else if (pct >= 0.6) {
+    emoji = '🌟';
+    title = ui('כל הכבוד!', 'Well Done!');
+  } else {
+    emoji = '💪';
+    title = ui('נמשיך להתאמן!', 'Keep Practicing!');
   }
 
   document.getElementById('result-emoji').textContent = emoji;
   document.getElementById('result-title').textContent = title;
-  document.getElementById('result-score').innerHTML =
-    `<strong>${correct}/${total}</strong> דגלים זוהו נכון`;
+  document.getElementById('result-score').textContent = ui(`${correct} מתוך ${total} נכון`, `${correct} out of ${total} correct`);
 
-  const flagsDiv = document.getElementById('result-flags');
-  flagsDiv.innerHTML = '';
-  results.forEach(r => {
-    const chip = document.createElement('div');
-    chip.className = `result-flag-chip ${r.nameOk ? 'won' : 'lost'}`;
-    chip.innerHTML = `<img src="${flagUrl(r.country.code)}" alt="${r.country.nameHe}" />
-                      ${r.country.nameHe} ${r.nameOk ? '✓' : '✗'}`;
-    flagsDiv.appendChild(chip);
+  // Chips
+  const chipsEl = document.getElementById('result-chips');
+  chipsEl.innerHTML = '';
+  state.roundResults.forEach(r => {
+    const img = document.createElement('img');
+    img.src = flagUrl(r.country.code);
+    img.className = 'result-chip ' + (r.nameOk ? 'ok' : 'fail');
+    img.alt = t(r.country, 'name');
+    chipsEl.appendChild(img);
   });
 
-  const isLastRound = (state.roundIndex + 1) * 5 >= COUNTRIES.length;
-  const continueBtn = document.getElementById('btn-continue');
-  if (isLastRound) {
-    continueBtn.textContent = '🔄 שחקו שוב מהתחלה';
-  } else {
-    continueBtn.textContent = '➡️ לחמשת הדגלים הבאים';
-  }
+  // Hear results button
+  document.getElementById('btn-hear-results').textContent = ui('🔊 שמע תוצאות', '🔊 Hear Results');
+
+  // Continue button
+  const hasMore = (state.roundIndex + 1) * 5 < state.deck.length;
+  document.getElementById('btn-continue').textContent = hasMore
+    ? ui('➡️ לחמשת הדגלים הבאים', '➡️ Next 5 Flags')
+    : ui('🔄 שחקו שוב', '🔄 Play Again');
 
   showScreen('screen-result');
 }
 
-function nextRound() {
-  state.roundIndex++;
-  if (state.roundIndex * 5 >= COUNTRIES.length) {
-    state.roundIndex = 0;
-    state.deck = shuffle(COUNTRIES);
+function continueGame() {
+  const hasMore = (state.roundIndex + 1) * 5 < state.deck.length;
+  if (hasMore) {
+    state.roundIndex++;
+    nextRound();
+  } else {
+    // Restart
+    startGame();
   }
-  loadStudyScreen();
 }
 
-/* ══════════════════════════════════
-   UTILITIES
-══════════════════════════════════ */
-function el(tag, cls, text) {
-  const e = document.createElement(tag);
-  if (cls) e.className = cls;
-  if (text !== undefined) e.textContent = text;
-  return e;
-}
-
-function buildOptions(correct, field) {
-  const others = shuffle(COUNTRIES.filter(c => c.code !== correct.code));
-  const wrong = others.slice(0, 3);
-  return shuffle([correct, ...wrong]);
-}
-
-/* Chrome keepalive: synthesis silently stops on long pauses */
-setInterval(() => {
-  if (window.speechSynthesis && window.speechSynthesis.speaking) {
-    window.speechSynthesis.pause();
-    window.speechSynthesis.resume();
-  }
-}, 10000);
-
-/* Service Worker registration */
+/* ════════════════════════════════
+   SERVICE WORKER
+════════════════════════════════ */
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js').catch(() => {});
-  });
+  navigator.serviceWorker.register('./sw.js').catch(() => {});
 }
 </script>
-
-<!-- TTS status bar (shown while speaking) -->
-<div id="tts-status"><span>🔊 </span><span id="tts-status-text">מקריא...</span></div>
-
 </body>
 </html>
