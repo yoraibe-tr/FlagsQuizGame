@@ -1,0 +1,1163 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="דגלים" />
+  <meta name="theme-color" content="#1a237e" />
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="apple-touch-icon" href="./icon.svg" />
+  <title>משחק זכרון דגלים</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;700;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue:   #1a237e;
+      --sky:    #1565c0;
+      --green:  #2e7d32;
+      --red:    #c62828;
+      --amber:  #e65100;
+      --gold:   #f9a825;
+      --bg:     #e8eaf6;
+      --white:  #ffffff;
+      --radius: 18px;
+    }
+
+    body {
+      font-family: 'Heebo', sans-serif;
+      background: var(--bg);
+      min-height: 100vh;
+      color: #1a1a2e;
+      direction: rtl;
+    }
+
+    /* ── Screens ── */
+    .screen { display: none; min-height: 100vh; }
+    .screen.active { display: flex; flex-direction: column; }
+
+    /* ════════════════════════════════
+       WELCOME SCREEN
+    ════════════════════════════════ */
+    #screen-welcome {
+      background: linear-gradient(160deg, #1a237e 0%, #283593 55%, #1565c0 100%);
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+      text-align: center;
+    }
+
+    .welcome-box {
+      background: rgba(255,255,255,0.08);
+      border: 2px solid rgba(255,255,255,0.2);
+      border-radius: 28px;
+      padding: 52px 48px;
+      max-width: 520px;
+      width: 100%;
+    }
+
+    .welcome-globe { font-size: 90px; line-height: 1; margin-bottom: 16px; }
+
+    .welcome-title {
+      font-size: 2.6rem;
+      font-weight: 900;
+      color: var(--white);
+      margin-bottom: 10px;
+      text-shadow: 0 2px 12px rgba(0,0,0,0.3);
+    }
+
+    .welcome-sub {
+      font-size: 1.15rem;
+      color: rgba(255,255,255,0.82);
+      margin-bottom: 40px;
+      line-height: 1.6;
+    }
+
+    .btn-start {
+      background: var(--gold);
+      color: #1a1a1a;
+      font-family: 'Heebo', sans-serif;
+      font-size: 1.6rem;
+      font-weight: 900;
+      padding: 18px 60px;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      box-shadow: 0 8px 30px rgba(249,168,37,0.5);
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .btn-start:hover { transform: scale(1.05); box-shadow: 0 12px 40px rgba(249,168,37,0.6); }
+    .btn-start:active { transform: scale(0.97); }
+
+    /* ════════════════════════════════
+       STUDY SCREEN
+    ════════════════════════════════ */
+    #screen-study {
+      background: var(--bg);
+      padding: 0;
+    }
+
+    .study-header {
+      background: var(--blue);
+      color: var(--white);
+      padding: 18px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .study-header-title { font-size: 1.3rem; font-weight: 700; }
+
+    .round-badge {
+      background: var(--gold);
+      color: #1a1a1a;
+      font-weight: 900;
+      font-size: 1rem;
+      padding: 6px 18px;
+      border-radius: 50px;
+    }
+
+    .study-instruction {
+      text-align: center;
+      font-size: 1.35rem;
+      font-weight: 600;
+      color: var(--blue);
+      padding: 24px 20px 12px;
+    }
+
+    .study-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+      padding: 16px 24px 32px;
+    }
+
+    /* Flag study card */
+    .study-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+      width: 200px;
+      overflow: hidden;
+      transition: transform 0.2s;
+    }
+    .study-card:hover { transform: translateY(-4px); }
+
+    .study-card-region-bar {
+      height: 8px;
+      width: 100%;
+    }
+
+    .study-card-flag {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px 12px 10px;
+      background: #f8f9fa;
+      border-bottom: 1px solid #eee;
+    }
+
+    .study-card-flag img {
+      width: 160px;
+      height: 105px;
+      object-fit: cover;
+      border-radius: 6px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+
+    .study-card-body {
+      padding: 14px 14px 16px;
+    }
+
+    .study-card-name {
+      font-size: 1.45rem;
+      font-weight: 900;
+      color: var(--blue);
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .study-card-speak {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 12px;
+    }
+
+    .btn-speak {
+      background: var(--sky);
+      color: white;
+      border: none;
+      border-radius: 50px;
+      padding: 7px 18px;
+      font-family: 'Heebo', sans-serif;
+      font-size: 0.95rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.15s;
+    }
+    .btn-speak:hover { background: var(--blue); }
+
+    .study-info-row {
+      font-size: 0.88rem;
+      color: #444;
+      padding: 3px 0;
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px solid #f0f0f0;
+      gap: 8px;
+    }
+    .study-info-row:last-child { border-bottom: none; }
+    .study-info-label { font-weight: 600; color: #555; white-space: nowrap; }
+    .study-info-val { color: #333; direction: ltr; text-align: left; }
+
+    .study-footer {
+      display: flex;
+      justify-content: center;
+      padding: 8px 24px 36px;
+    }
+
+    .btn-quiz {
+      background: var(--green);
+      color: white;
+      font-family: 'Heebo', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 900;
+      padding: 18px 56px;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      box-shadow: 0 6px 24px rgba(46,125,50,0.4);
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .btn-quiz:hover { transform: scale(1.04); }
+    .btn-quiz:active { transform: scale(0.97); }
+
+    /* ════════════════════════════════
+       QUIZ SCREEN
+    ════════════════════════════════ */
+    #screen-quiz {
+      background: var(--bg);
+    }
+
+    .quiz-header {
+      background: var(--blue);
+      color: var(--white);
+      padding: 18px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .quiz-header-title { font-size: 1.3rem; font-weight: 700; }
+
+    .progress-bar-wrap {
+      flex: 1;
+      background: rgba(255,255,255,0.2);
+      border-radius: 20px;
+      height: 12px;
+      max-width: 220px;
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: var(--gold);
+      border-radius: 20px;
+      transition: width 0.4s;
+    }
+
+    .quiz-progress-text { font-size: 1rem; font-weight: 700; }
+
+    .quiz-body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 32px 20px;
+      gap: 28px;
+    }
+
+    .quiz-question-label {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--blue);
+      text-align: center;
+    }
+
+    .quiz-flag-wrap {
+      background: var(--white);
+      border-radius: 20px;
+      padding: 20px 32px;
+      box-shadow: 0 6px 28px rgba(0,0,0,0.14);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .quiz-flag-img {
+      width: 260px;
+      height: 172px;
+      object-fit: cover;
+      border-radius: 10px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.18);
+    }
+
+    .btn-hear-question {
+      background: var(--sky);
+      color: white;
+      border: none;
+      border-radius: 50px;
+      padding: 10px 26px;
+      font-family: 'Heebo', sans-serif;
+      font-size: 1.05rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: background 0.15s;
+    }
+    .btn-hear-question:hover { background: var(--blue); }
+
+    /* Multiple choice answers */
+    .quiz-options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      width: 100%;
+      max-width: 560px;
+    }
+
+    .btn-option {
+      background: var(--white);
+      border: 3px solid #c5cae9;
+      border-radius: 14px;
+      padding: 18px 14px;
+      font-family: 'Heebo', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--blue);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: border-color 0.15s, background 0.15s, transform 0.12s;
+      text-align: center;
+    }
+    .btn-option:hover { border-color: var(--sky); background: #e8eaf6; transform: scale(1.02); }
+    .btn-option.correct  { background: #e8f5e9; border-color: var(--green); color: var(--green); }
+    .btn-option.wrong    { background: #ffebee; border-color: var(--red); color: var(--red); }
+    .btn-option:disabled { cursor: default; transform: none; }
+
+    /* Detail phase */
+    .detail-box {
+      background: var(--white);
+      border-radius: 16px;
+      padding: 24px 28px;
+      max-width: 560px;
+      width: 100%;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+
+    .detail-label {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #555;
+      margin-bottom: 14px;
+    }
+
+    .detail-options {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .btn-detail {
+      background: var(--white);
+      border: 3px solid #c5cae9;
+      border-radius: 12px;
+      padding: 14px 20px;
+      font-family: 'Heebo', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--blue);
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+      text-align: right;
+    }
+    .btn-detail:hover { border-color: var(--sky); background: #e8eaf6; }
+    .btn-detail.correct { background: #e8f5e9; border-color: var(--green); color: var(--green); }
+    .btn-detail.wrong   { background: #ffebee; border-color: var(--red); color: var(--red); }
+    .btn-detail:disabled { cursor: default; }
+
+    .btn-next {
+      background: var(--sky);
+      color: white;
+      font-family: 'Heebo', sans-serif;
+      font-size: 1.3rem;
+      font-weight: 900;
+      padding: 16px 48px;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(21,101,192,0.4);
+      transition: transform 0.15s;
+      margin-top: 8px;
+    }
+    .btn-next:hover { transform: scale(1.04); }
+
+    /* ════════════════════════════════
+       ROUND RESULT SCREEN
+    ════════════════════════════════ */
+    #screen-result {
+      background: linear-gradient(160deg, #1a237e 0%, #283593 55%, #1565c0 100%);
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+      text-align: center;
+    }
+
+    .result-box {
+      background: rgba(255,255,255,0.1);
+      border: 2px solid rgba(255,255,255,0.25);
+      border-radius: 28px;
+      padding: 52px 40px;
+      max-width: 480px;
+      width: 100%;
+    }
+
+    .result-emoji { font-size: 80px; line-height: 1; margin-bottom: 12px; }
+
+    .result-title {
+      font-size: 2.2rem;
+      font-weight: 900;
+      color: var(--white);
+      margin-bottom: 10px;
+    }
+
+    .result-score {
+      font-size: 1.25rem;
+      color: rgba(255,255,255,0.85);
+      margin-bottom: 36px;
+    }
+
+    .result-score strong {
+      color: var(--gold);
+      font-size: 1.6rem;
+    }
+
+    .result-flags {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 36px;
+    }
+
+    .result-flag-chip {
+      background: rgba(255,255,255,0.15);
+      border-radius: 50px;
+      padding: 6px 14px;
+      color: white;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .result-flag-chip img {
+      width: 36px;
+      height: 24px;
+      object-fit: cover;
+      border-radius: 3px;
+    }
+
+    .result-flag-chip.won  { border: 2px solid #69f0ae; }
+    .result-flag-chip.lost { border: 2px solid #ff5252; opacity: 0.7; }
+
+    .btn-continue {
+      background: var(--gold);
+      color: #1a1a1a;
+      font-family: 'Heebo', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 900;
+      padding: 18px 56px;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      box-shadow: 0 6px 24px rgba(249,168,37,0.5);
+      transition: transform 0.15s;
+    }
+    .btn-continue:hover { transform: scale(1.05); }
+
+    /* ════════════════════════════════
+       SPEAKING ANIMATION
+    ════════════════════════════════ */
+    .speaking-dots {
+      display: inline-flex;
+      gap: 4px;
+      align-items: center;
+    }
+    .speaking-dots span {
+      width: 7px; height: 7px;
+      background: currentColor;
+      border-radius: 50%;
+      animation: bounce-dot 1s infinite;
+    }
+    .speaking-dots span:nth-child(2) { animation-delay: 0.15s; }
+    .speaking-dots span:nth-child(3) { animation-delay: 0.3s; }
+    @keyframes bounce-dot {
+      0%,80%,100% { transform: translateY(0); opacity: 0.5; }
+      40%          { transform: translateY(-6px); opacity: 1; }
+    }
+
+    /* ════════════════════════════════
+       TTS STATUS BAR + SOUND ICONS
+    ════════════════════════════════ */
+    #tts-status {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      background: rgba(21,101,192,0.93);
+      color: white;
+      font-size: 0.95rem;
+      font-weight: 600;
+      padding: 10px 20px;
+      text-align: center;
+      display: none;
+      z-index: 200;
+      backdrop-filter: blur(6px);
+      border-top: 2px solid rgba(255,255,255,0.2);
+    }
+    #tts-status.visible { display: block; }
+
+    .sound-icon { font-size: 1em; flex-shrink: 0; }
+
+    /* Pulse on the 🔊 icon while TTS fires */
+    @keyframes speaker-pulse {
+      0%,100% { transform: scale(1);   opacity: 1;   }
+      50%      { transform: scale(1.4); opacity: 0.6; }
+    }
+    .tts-active .sound-icon { animation: speaker-pulse 0.5s infinite; }
+
+    /* Minimum touch target for child-friendly tapping */
+    .btn-option, .btn-detail { min-height: 56px; }
+
+    /* ════════════════════════════════
+       REGION COLORS
+    ════════════════════════════════ */
+    .region-europe   { background: #1565c0; }
+    .region-americas { background: #2e7d32; }
+    .region-asia     { background: #b71c1c; }
+    .region-africa   { background: #e65100; }
+
+    /* ════════════════════════════════
+       RESPONSIVE
+    ════════════════════════════════ */
+    @media (max-width: 700px) {
+      .study-card { width: 160px; }
+      .study-card-flag img { width: 130px; height: 86px; }
+      .study-card-name { font-size: 1.2rem; }
+      .quiz-flag-img { width: 200px; height: 133px; }
+      .quiz-options { grid-template-columns: 1fr; }
+      .btn-option { font-size: 1.1rem; padding: 16px 12px; }
+      .welcome-title { font-size: 2rem; }
+    }
+
+    @media (max-width: 480px) {
+      .study-grid { gap: 12px; padding: 12px 12px 24px; }
+      .study-card { width: 140px; }
+      .study-card-flag img { width: 116px; height: 76px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════
+     SCREEN 1 — WELCOME
+══════════════════════════════════ -->
+<div id="screen-welcome" class="screen active">
+  <!-- warning shown only when no Hebrew TTS voice found -->
+  <div id="no-hebrew-banner" style="display:none;background:#fff3e0;color:#e65100;padding:12px 20px;font-size:0.95rem;font-weight:600;text-align:center;border-bottom:2px solid #ffb74d;">
+    ⚠️ לא נמצא קול עברי במכשיר זה. לחוויה מלאה: הגדרות Windows ← נגישות ← קריינות ← הוסף שפה עברית.
+  </div>
+  <div class="welcome-box">
+    <div class="welcome-globe">🌍</div>
+    <h1 class="welcome-title">משחק זכרון דגלים</h1>
+    <p class="welcome-sub">
+      נלמד דגלים של מדינות מהעולם<br>
+      ואז נראה כמה זכרנו!
+    </p>
+    <button class="btn-start" onclick="speak('שלום! בואו נשחק!'); startGame();">בואו נשחק! 🎉</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     SCREEN 2 — STUDY (5 flags)
+══════════════════════════════════ -->
+<div id="screen-study" class="screen">
+  <header class="study-header">
+    <span class="study-header-title">📖 לומדים דגלים</span>
+    <span id="study-round-badge" class="round-badge"></span>
+  </header>
+  <div class="study-instruction" id="study-instruction">
+    הקשיבו לשמות המדינות &#x2192; אחר כך ננסה לזכור!
+  </div>
+  <div class="study-grid" id="study-grid"></div>
+  <div class="study-footer">
+    <button class="btn-quiz" id="btn-to-quiz" onclick="startQuiz()">
+      יאללה, בואו נשחק! 🧠
+    </button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     SCREEN 3 — QUIZ
+══════════════════════════════════ -->
+<div id="screen-quiz" class="screen">
+  <header class="quiz-header">
+    <span class="quiz-header-title">🧠 זמן חידון!</span>
+    <div class="progress-bar-wrap">
+      <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
+    </div>
+    <span class="quiz-progress-text" id="quiz-progress-text">1 / 5</span>
+  </header>
+  <div class="quiz-body" id="quiz-body">
+    <!-- injected by JS -->
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     SCREEN 4 — ROUND RESULT
+══════════════════════════════════ -->
+<div id="screen-result" class="screen">
+  <div class="result-box">
+    <div class="result-emoji" id="result-emoji">🎉</div>
+    <h2 class="result-title" id="result-title">כל הכבוד!</h2>
+    <p class="result-score" id="result-score"></p>
+    <div class="result-flags" id="result-flags"></div>
+    <button class="btn-continue" id="btn-continue" onclick="nextRound()"></button>
+  </div>
+</div>
+
+<script>
+/* ══════════════════════════════════
+   DATA
+══════════════════════════════════ */
+const COUNTRIES = [
+  { code:'fr', nameHe:'צרפת',         nameEn:'France',        capital:'פריז',           area:551695,    pop:68000000,    region:'europe'   },
+  { code:'de', nameHe:'גרמניה',        nameEn:'Germany',       capital:'ברלין',           area:357114,    pop:84000000,    region:'europe'   },
+  { code:'it', nameHe:'איטליה',        nameEn:'Italy',         capital:'רומא',            area:301340,    pop:59000000,    region:'europe'   },
+  { code:'es', nameHe:'ספרד',          nameEn:'Spain',         capital:'מדריד',           area:505990,    pop:47000000,    region:'europe'   },
+  { code:'gb', nameHe:'בריטניה',       nameEn:'United Kingdom',capital:'לונדון',          area:243610,    pop:67000000,    region:'europe'   },
+  { code:'us', nameHe:'ארצות הברית',   nameEn:'United States', capital:'וושינגטון',       area:9833517,   pop:331000000,   region:'americas' },
+  { code:'br', nameHe:'ברזיל',         nameEn:'Brazil',        capital:'ברזיליה',         area:8515767,   pop:215000000,   region:'americas' },
+  { code:'cn', nameHe:'סין',           nameEn:'China',         capital:'בייג\'ינג',       area:9596960,   pop:1400000000,  region:'asia'     },
+  { code:'jp', nameHe:'יפן',           nameEn:'Japan',         capital:'טוקיו',           area:377975,    pop:125000000,   region:'asia'     },
+  { code:'in', nameHe:'הודו',          nameEn:'India',         capital:'ניו דלהי',        area:3287263,   pop:1400000000,  region:'asia'     },
+  { code:'ru', nameHe:'רוסיה',         nameEn:'Russia',        capital:'מוסקווה',         area:17098242,  pop:144000000,   region:'europe'   },
+  { code:'au', nameHe:'אוסטרליה',      nameEn:'Australia',     capital:'קנברה',           area:7692024,   pop:26000000,    region:'americas' },
+  { code:'ca', nameHe:'קנדה',          nameEn:'Canada',        capital:'אוטווה',          area:9984670,   pop:38000000,    region:'americas' },
+  { code:'mx', nameHe:'מקסיקו',        nameEn:'Mexico',        capital:'מקסיקו סיטי',     area:1964375,   pop:130000000,   region:'americas' },
+  { code:'il', nameHe:'ישראל',         nameEn:'Israel',        capital:'ירושלים',         area:20770,     pop:9800000,     region:'asia'     },
+  { code:'eg', nameHe:'מצרים',         nameEn:'Egypt',         capital:'קהיר',            area:1002450,   pop:104000000,   region:'africa'   },
+  { code:'za', nameHe:'דרום אפריקה',   nameEn:'South Africa',  capital:'פרטוריה',         area:1219090,   pop:60000000,    region:'africa'   },
+  { code:'ng', nameHe:'ניגריה',        nameEn:'Nigeria',       capital:'אבוג\'ה',          area:923768,    pop:220000000,   region:'africa'   },
+  { code:'ar', nameHe:'ארגנטינה',      nameEn:'Argentina',     capital:'בואנוס איירס',    area:2780400,   pop:46000000,    region:'americas' },
+  { code:'tr', nameHe:'טורקיה',        nameEn:'Turkey',        capital:'אנקרה',           area:783356,    pop:85000000,    region:'asia'     },
+  { code:'kr', nameHe:'דרום קוריאה',   nameEn:'South Korea',   capital:'סיאול',           area:100210,    pop:52000000,    region:'asia'     },
+  { code:'se', nameHe:'שוודיה',        nameEn:'Sweden',        capital:'שטוקהולם',        area:450295,    pop:10000000,    region:'europe'   },
+  { code:'nl', nameHe:'הולנד',         nameEn:'Netherlands',   capital:'אמסטרדם',         area:41543,     pop:17000000,    region:'europe'   },
+  { code:'ch', nameHe:'שווייץ',        nameEn:'Switzerland',   capital:'ברן',             area:41285,     pop:8700000,     region:'europe'   },
+  { code:'gr', nameHe:'יוון',          nameEn:'Greece',        capital:'אתונה',           area:131957,    pop:10700000,    region:'europe'   },
+  { code:'pt', nameHe:'פורטוגל',       nameEn:'Portugal',      capital:'ליסבון',          area:92212,     pop:10300000,    region:'europe'   },
+  { code:'no', nameHe:'נורווגיה',      nameEn:'Norway',        capital:'אוסלו',           area:385207,    pop:5400000,     region:'europe'   },
+];
+
+/* ══════════════════════════════════
+   STATE
+══════════════════════════════════ */
+const state = {
+  deck: [],           // shuffled copy of COUNTRIES
+  roundIndex: 0,      // which batch of 5 we're on
+  batch: [],          // current 5 countries
+  quizIndex: 0,       // which card in the batch we're quizzing
+  quizPhase: 'name',  // 'name' | 'detail'
+  roundCorrect: 0,    // correct answers this round
+  roundResults: [],   // [{country, nameOk, detailOk}]
+};
+
+/* ══════════════════════════════════
+   HELPERS
+══════════════════════════════════ */
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function flagUrl(code) {
+  return `https://flagcdn.com/w160/${code}.png`;
+}
+
+function formatNum(n) {
+  return n.toLocaleString('he-IL');
+}
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+/* ── Text-to-Speech ── */
+let ttsVoice = null;
+let ttsReady = false;
+let ttsNoHebrew = false;
+
+function initVoices() {
+  if (!window.speechSynthesis) return;
+  const voices = window.speechSynthesis.getVoices();
+  if (!voices.length) return;
+  ttsReady = true;
+  // 1. prefer any Hebrew voice
+  ttsVoice = voices.find(v => v.lang.toLowerCase().startsWith('he')) || null;
+  // 2. fall back to English, then first available
+  if (!ttsVoice) {
+    ttsNoHebrew = true;
+    ttsVoice = voices.find(v => v.lang.toLowerCase().startsWith('en-')) || voices[0] || null;
+  }
+  // show warning banner if no Hebrew voice
+  const banner = document.getElementById('no-hebrew-banner');
+  if (banner) banner.style.display = ttsNoHebrew ? 'block' : 'none';
+}
+
+if (window.speechSynthesis) {
+  window.speechSynthesis.addEventListener('voiceschanged', initVoices);
+  initVoices(); // works immediately in Firefox
+}
+
+function showTtsStatus(text) {
+  const bar   = document.getElementById('tts-status');
+  const label = document.getElementById('tts-status-text');
+  if (bar && label) { label.textContent = text; bar.classList.add('visible'); }
+}
+function hideTtsStatus() {
+  document.getElementById('tts-status')?.classList.remove('visible');
+}
+
+function speak(text, onEnd) {
+  if (!window.speechSynthesis) { if (onEnd) onEnd(); return; }
+  window.speechSynthesis.cancel();
+  showTtsStatus(text);
+  const u = new SpeechSynthesisUtterance(text);
+  if (ttsVoice) u.voice = ttsVoice;
+  u.lang = ttsVoice ? ttsVoice.lang : 'he-IL';
+  u.rate = 0.85;
+  u.pitch = 1.1;
+  u.onend  = () => { hideTtsStatus(); if (onEnd) onEnd(); };
+  u.onerror = () => { hideTtsStatus(); if (onEnd) onEnd(); };
+  // Chrome bug: synthesis can get stuck after page is backgrounded
+  if (window.speechSynthesis.paused) window.speechSynthesis.resume();
+  window.speechSynthesis.speak(u);
+}
+
+function speakSequence(texts, delay, onAllDone) {
+  let i = 0;
+  function next() {
+    if (i >= texts.length) { if (onAllDone) onAllDone(); return; }
+    speak(texts[i++], () => setTimeout(next, delay));
+  }
+  next();
+}
+
+/* ══════════════════════════════════
+   GAME FLOW
+══════════════════════════════════ */
+function startGame() {
+  state.deck = shuffle(COUNTRIES);
+  state.roundIndex = 0;
+  loadStudyScreen();
+}
+
+function loadStudyScreen() {
+  const start = state.roundIndex * 5;
+  // wrap around if we've used all countries
+  if (start >= state.deck.length) {
+    state.deck = shuffle(COUNTRIES);
+    state.roundIndex = 0;
+  }
+  state.batch = state.deck.slice(state.roundIndex * 5, state.roundIndex * 5 + 5);
+  if (state.batch.length < 5) {
+    state.deck = shuffle(COUNTRIES);
+    state.roundIndex = 0;
+    state.batch = state.deck.slice(0, 5);
+  }
+
+  // Render study cards
+  const grid = document.getElementById('study-grid');
+  grid.innerHTML = '';
+  state.batch.forEach(c => {
+    grid.appendChild(buildStudyCard(c));
+  });
+
+  document.getElementById('study-round-badge').textContent =
+    `סבב ${state.roundIndex + 1}`;
+
+  showScreen('screen-study');
+
+  // Auto-read all 5 names with a pause between each
+  setTimeout(() => {
+    const names = state.batch.map(c => c.nameHe);
+    speakSequence(names, 600);
+  }, 800);
+}
+
+function buildStudyCard(c) {
+  const card = document.createElement('div');
+  card.className = 'study-card';
+
+  card.innerHTML = `
+    <div class="study-card-region-bar region-${c.region}"></div>
+    <div class="study-card-flag">
+      <img src="${flagUrl(c.code)}" alt="${c.nameHe}" loading="lazy" />
+    </div>
+    <div class="study-card-body">
+      <div class="study-card-name">${c.nameHe}</div>
+      <div class="study-card-speak">
+        <button class="btn-speak" onclick="speak('${c.nameHe.replace(/'/g, "\\'")}')">
+          🔊 <span>שמע שם</span>
+        </button>
+      </div>
+      <div class="study-info-row">
+        <span class="study-info-label">בירה</span>
+        <span class="study-info-val">${c.capital}</span>
+      </div>
+      <div class="study-info-row">
+        <span class="study-info-label">שטח</span>
+        <span class="study-info-val">${formatNum(c.area)} קמ"ר</span>
+      </div>
+      <div class="study-info-row">
+        <span class="study-info-label">אוכלוסייה</span>
+        <span class="study-info-val">${formatNum(c.pop)}</span>
+      </div>
+    </div>
+  `;
+  return card;
+}
+
+/* ══════════════════════════════════
+   QUIZ
+══════════════════════════════════ */
+function startQuiz() {
+  window.speechSynthesis && window.speechSynthesis.cancel();
+  state.quizIndex = 0;
+  state.quizPhase = 'name';
+  state.roundCorrect = 0;
+  state.roundResults = state.batch.map(c => ({ country: c, nameOk: false, detailOk: false }));
+  showScreen('screen-quiz');
+  renderQuizCard();
+}
+
+function renderQuizCard() {
+  const total = state.batch.length;
+  const idx   = state.quizIndex;
+  const c     = state.batch[idx];
+
+  // progress
+  document.getElementById('progress-fill').style.width =
+    `${(idx / total) * 100}%`;
+  document.getElementById('quiz-progress-text').textContent =
+    `${idx + 1} / ${total}`;
+
+  const body = document.getElementById('quiz-body');
+  body.innerHTML = '';
+
+  if (state.quizPhase === 'name') {
+    renderNamePhase(body, c);
+  } else {
+    renderDetailPhase(body, c);
+  }
+}
+
+/* ── Phase 1: Which country is this? ── */
+function renderNamePhase(body, c) {
+  // Question label
+  const q = el('div', 'quiz-question-label', '🌍 איזו מדינה זו?');
+  body.appendChild(q);
+
+  // Flag
+  const wrap = el('div', 'quiz-flag-wrap');
+  const img = document.createElement('img');
+  img.className = 'quiz-flag-img';
+  img.src = flagUrl(c.code);
+  img.alt = '?';
+  wrap.appendChild(img);
+
+  const hearBtn = el('button', 'btn-hear-question', '🔊 שמע שוב את השאלה');
+  hearBtn.onclick = () => speak('איזו מדינה זו?');
+  wrap.appendChild(hearBtn);
+  body.appendChild(wrap);
+
+  // Build 4 options: correct + 3 random wrong
+  const options = buildOptions(c, 'nameHe');
+  const grid = el('div', 'quiz-options');
+  options.forEach(opt => {
+    const btn = document.createElement('button');
+    btn.className = 'btn-option';
+    btn.innerHTML = `<span class="sound-icon">🔊</span> ${opt.nameHe}`;
+    btn.setAttribute('data-code', opt.code);
+    btn.onclick = () => {
+      document.querySelectorAll('.btn-option').forEach(b => b.classList.remove('tts-active'));
+      btn.classList.add('tts-active');
+      speak(opt.nameHe, () => btn.classList.remove('tts-active'));
+      handleNameAnswer(btn, opt.code === c.code, c);
+    };
+    grid.appendChild(btn);
+  });
+  body.appendChild(grid);
+
+  // Auto-read: question then all 4 options in sequence
+  setTimeout(() => {
+    speakSequence(['איזו מדינה זו?', ...options.map(o => o.nameHe)], 450);
+  }, 400);
+}
+
+function handleNameAnswer(btn, isCorrect, c) {
+  const allBtns = document.querySelectorAll('.btn-option');
+  allBtns.forEach(b => b.disabled = true);
+
+  if (isCorrect) {
+    btn.classList.add('correct');
+    state.roundResults[state.quizIndex].nameOk = true;
+    speak(c.nameHe + '! נכון מאוד!', () => {
+      setTimeout(() => {
+        state.quizPhase = 'detail';
+        renderQuizCard();
+      }, 400);
+    });
+  } else {
+    btn.classList.add('wrong');
+    // highlight correct
+    allBtns.forEach(b => {
+      if (b.getAttribute('data-code') === c.code) b.classList.add('correct');
+    });
+    speak('לא בדיוק... זו ' + c.nameHe, () => {
+      setTimeout(() => {
+        state.quizPhase = 'detail';
+        renderQuizCard();
+      }, 400);
+    });
+  }
+}
+
+/* ── Phase 2: What do you remember? ── */
+function renderDetailPhase(body, c) {
+  const q = el('div', 'quiz-question-label', `🤔 מה אתה זוכר על ${c.nameHe}?`);
+  body.appendChild(q);
+
+  const wrap = el('div', 'quiz-flag-wrap');
+  const img = document.createElement('img');
+  img.className = 'quiz-flag-img';
+  img.src = flagUrl(c.code);
+  img.alt = c.nameHe;
+  wrap.appendChild(img);
+  // Show country name now
+  const nameTag = el('div', '', c.nameHe);
+  nameTag.style.cssText = 'font-size:1.5rem;font-weight:900;color:#1a237e;';
+  wrap.appendChild(nameTag);
+  body.appendChild(wrap);
+
+  // Pick a random detail to ask about
+  const detailType = Math.random() < 0.5 ? 'capital' : 'pop';
+  const box = el('div', 'detail-box');
+
+  let question, correctAnswer, wrongAnswers;
+
+  if (detailType === 'capital') {
+    question = `מהי בירת ${c.nameHe}?`;
+    correctAnswer = c.capital;
+    // 3 wrong capitals from other countries in batch or random
+    const pool = shuffle(COUNTRIES.filter(x => x.code !== c.code));
+    wrongAnswers = pool.slice(0, 3).map(x => x.capital);
+  } else {
+    question = `כמה אנשים גרים ב${c.nameHe}?`;
+    const popStr = n => {
+      if (n >= 1_000_000_000) return `${(n / 1_000_000_000).toFixed(1)} מיליארד`;
+      if (n >= 1_000_000)     return `${Math.round(n / 1_000_000)} מיליון`;
+      return formatNum(n);
+    };
+    correctAnswer = popStr(c.pop);
+    const pool = shuffle(COUNTRIES.filter(x => x.code !== c.code));
+    wrongAnswers = pool.slice(0, 3).map(x => popStr(x.pop));
+    // deduplicate
+    const unique = [...new Set(wrongAnswers)].slice(0, 3);
+    while (unique.length < 3) unique.push(popStr(pool[unique.length + 3]?.pop ?? 1000000));
+    wrongAnswers = unique;
+  }
+
+  const label = el('div', 'detail-label', question);
+  box.appendChild(label);
+
+  const opts = shuffle([correctAnswer, ...wrongAnswers]);
+  const dOpts = el('div', 'detail-options');
+
+  opts.forEach(opt => {
+    const btn = document.createElement('button');
+    btn.className = 'btn-detail';
+    btn.innerHTML = `<span class="sound-icon">🔊</span> ${opt}`;
+    btn.setAttribute('data-answer', opt);
+    btn.onclick = () => {
+      document.querySelectorAll('.btn-detail').forEach(b => b.classList.remove('tts-active'));
+      btn.classList.add('tts-active');
+      speak(opt, () => btn.classList.remove('tts-active'));
+      handleDetailAnswer(btn, opt === correctAnswer, correctAnswer, c);
+    };
+    dOpts.appendChild(btn);
+  });
+
+  box.appendChild(dOpts);
+  body.appendChild(box);
+
+  // Auto-read: question then all options in sequence
+  setTimeout(() => {
+    speakSequence([question, ...opts], 450);
+  }, 400);
+}
+
+function handleDetailAnswer(btn, isCorrect, correctAnswer, c) {
+  const allBtns = document.querySelectorAll('.btn-detail');
+  allBtns.forEach(b => b.disabled = true);
+
+  if (isCorrect) {
+    btn.classList.add('correct');
+    state.roundResults[state.quizIndex].detailOk = true;
+    speak('כן! נכון!');
+  } else {
+    btn.classList.add('wrong');
+    allBtns.forEach(b => { if (b.dataset.answer === correctAnswer) b.classList.add('correct'); });
+    speak('לא בדיוק');
+  }
+
+  // Show Next button
+  const nextBtn = el('button', 'btn-next', '');
+  const isLast = state.quizIndex >= state.batch.length - 1;
+  nextBtn.textContent = isLast ? 'לראות תוצאות 🏆' : 'הדגל הבא ➡️';
+  nextBtn.onclick = () => {
+    if (isLast) {
+      showResult();
+    } else {
+      state.quizIndex++;
+      state.quizPhase = 'name';
+      renderQuizCard();
+    }
+  };
+  document.getElementById('quiz-body').appendChild(nextBtn);
+}
+
+/* ══════════════════════════════════
+   RESULT SCREEN
+══════════════════════════════════ */
+function showResult() {
+  const results = state.roundResults;
+  const correct = results.filter(r => r.nameOk).length;
+  const total   = results.length;
+
+  let emoji, title, msg;
+  if (correct === total) {
+    emoji = '🌟'; title = 'מדהים! ענית נכון על הכל!';
+    msg = `כל ${total} הדגלים זוהו נכון!`;
+    speak('מדהים! ענית נכון על הכל!');
+  } else if (correct >= Math.ceil(total / 2)) {
+    emoji = '😊'; title = 'כל הכבוד!';
+    msg = `זיהית נכון ${correct} מתוך ${total} דגלים`;
+    speak('כל הכבוד!');
+  } else {
+    emoji = '💪'; title = 'ננסה שוב!';
+    msg = `זיהית ${correct} מתוך ${total} דגלים — בפעם הבאה יהיה יותר טוב!`;
+    speak('ננסה שוב!');
+  }
+
+  document.getElementById('result-emoji').textContent = emoji;
+  document.getElementById('result-title').textContent = title;
+  document.getElementById('result-score').innerHTML =
+    `<strong>${correct}/${total}</strong> דגלים זוהו נכון`;
+
+  const flagsDiv = document.getElementById('result-flags');
+  flagsDiv.innerHTML = '';
+  results.forEach(r => {
+    const chip = document.createElement('div');
+    chip.className = `result-flag-chip ${r.nameOk ? 'won' : 'lost'}`;
+    chip.innerHTML = `<img src="${flagUrl(r.country.code)}" alt="${r.country.nameHe}" />
+                      ${r.country.nameHe} ${r.nameOk ? '✓' : '✗'}`;
+    flagsDiv.appendChild(chip);
+  });
+
+  const isLastRound = (state.roundIndex + 1) * 5 >= COUNTRIES.length;
+  const continueBtn = document.getElementById('btn-continue');
+  if (isLastRound) {
+    continueBtn.textContent = '🔄 שחקו שוב מהתחלה';
+  } else {
+    continueBtn.textContent = '➡️ לחמשת הדגלים הבאים';
+  }
+
+  showScreen('screen-result');
+}
+
+function nextRound() {
+  state.roundIndex++;
+  if (state.roundIndex * 5 >= COUNTRIES.length) {
+    state.roundIndex = 0;
+    state.deck = shuffle(COUNTRIES);
+  }
+  loadStudyScreen();
+}
+
+/* ══════════════════════════════════
+   UTILITIES
+══════════════════════════════════ */
+function el(tag, cls, text) {
+  const e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (text !== undefined) e.textContent = text;
+  return e;
+}
+
+function buildOptions(correct, field) {
+  const others = shuffle(COUNTRIES.filter(c => c.code !== correct.code));
+  const wrong = others.slice(0, 3);
+  return shuffle([correct, ...wrong]);
+}
+
+/* Chrome keepalive: synthesis silently stops on long pauses */
+setInterval(() => {
+  if (window.speechSynthesis && window.speechSynthesis.speaking) {
+    window.speechSynthesis.pause();
+    window.speechSynthesis.resume();
+  }
+}, 10000);
+
+/* Service Worker registration */
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').catch(() => {});
+  });
+}
+</script>
+
+<!-- TTS status bar (shown while speaking) -->
+<div id="tts-status"><span>🔊 </span><span id="tts-status-text">מקריא...</span></div>
+
+</body>
+</html>

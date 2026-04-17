@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="80" fill="#1a237e"/>
+  <circle cx="256" cy="256" r="160" fill="#1565c0"/>
+  <ellipse cx="256" cy="256" rx="60" ry="160" fill="none" stroke="#ffffff" stroke-width="8"/>
+  <ellipse cx="256" cy="256" rx="120" ry="160" fill="none" stroke="#ffffff" stroke-width="8"/>
+  <circle cx="256" cy="256" r="160" fill="none" stroke="#ffffff" stroke-width="8"/>
+  <line x1="96" y1="256" x2="416" y2="256" stroke="#ffffff" stroke-width="8"/>
+  <line x1="256" y1="96" x2="256" y2="416" stroke="#ffffff" stroke-width="8"/>
+  <ellipse cx="256" cy="192" rx="160" ry="40" fill="none" stroke="#ffffff" stroke-width="6"/>
+  <ellipse cx="256" cy="320" rx="160" ry="40" fill="none" stroke="#ffffff" stroke-width="6"/>
+  <text x="256" y="292" text-anchor="middle" font-size="120" font-family="sans-serif">🌍</text>
+</svg>
